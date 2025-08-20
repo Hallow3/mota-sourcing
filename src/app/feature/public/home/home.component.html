@@ -18,13 +18,26 @@
           intelligent.
         </p>
         <div class="flex flex-col justify-center gap-4 sm:flex-row">
-          <a href="#demande"
+          <a routerLink="/mota/sourcing-request"
             class="px-8 py-4 text-lg font-semibold text-white transition duration-300 border rounded-lg shadow-xl backdrop-blur-md bg-white/10 border-white/20 hover:bg-white/20">
             Commencer une demande
           </a>
           <a href="#packs"
             class="px-8 py-4 text-lg font-semibold text-gray-200 transition duration-300 border rounded-lg backdrop-blur-md bg-gray-800/30 border-gray-600/50 hover:bg-gray-700/50">
             Voir les packs
+          </a>
+          <a routerLink="/mota/dashboard"
+            class="px-8 py-4 text-lg font-semibold text-white transition duration-300 border rounded-lg shadow-xl backdrop-blur-md bg-gradient-to-r from-cyan-500/80 to-blue-600/80 border-cyan-400/50 hover:from-cyan-600/90 hover:to-blue-700/90">
+            <i class="fas fa-chart-line mr-2"></i>
+            Mon Dashboard
+          </a>
+          <a *ngIf="cartItemCount > 0" routerLink="/mota/cart"
+            class="px-8 py-4 text-lg font-semibold text-white transition duration-300 border rounded-lg shadow-xl backdrop-blur-md bg-gradient-to-r from-emerald-500/80 to-green-600/80 border-emerald-400/50 hover:from-emerald-600/90 hover:to-green-700/90 relative">
+            <i class="fas fa-shopping-cart mr-2"></i>
+            Voir mon panier ({{ cartItemCount }})
+            <span class="absolute -top-2 -right-2 bg-red-500 text-white text-sm rounded-full w-6 h-6 flex items-center justify-center">
+              {{ cartItemCount }}
+            </span>
           </a>
         </div>
       </div>
@@ -272,6 +285,36 @@
     </div>
   </section>
 
+  <!-- Cart Summary Section (if items in cart) -->
+  <section *ngIf="cartItemCount > 0" class="relative py-16">
+    <div class="absolute inset-0 bg-gradient-to-r from-emerald-600/20 to-green-600/20"></div>
+    <div class="relative px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
+      <div class="p-8 border shadow-2xl backdrop-blur-lg bg-emerald-800/30 border-emerald-600/40 rounded-2xl">
+        <div class="text-center mb-6">
+          <h2 class="text-2xl font-bold text-white mb-4">
+            <i class="fas fa-shopping-cart mr-3 text-emerald-300"></i>
+            Vous avez {{ cartItemCount }} demande{{ cartItemCount > 1 ? 's' : '' }} en cours
+          </h2>
+          <p class="text-emerald-200">
+            Total estimé : <span class="text-2xl font-bold text-emerald-300">{{ getTotalPriceFormatted() }}</span>
+          </p>
+        </div>
+        <div class="flex flex-col justify-center gap-4 sm:flex-row">
+          <a routerLink="/mota/cart"
+            class="px-8 py-4 text-lg font-semibold text-white transition duration-300 border rounded-lg shadow-lg backdrop-blur-md bg-gradient-to-r from-emerald-500/80 to-green-600/80 border-emerald-400/50 hover:from-emerald-600/90 hover:to-green-700/90">
+            <i class="fas fa-eye mr-2"></i>
+            Voir le panier
+          </a>
+          <a routerLink="/mota/checkout"
+            class="px-8 py-4 text-lg font-semibold text-white transition duration-300 border rounded-lg shadow-lg backdrop-blur-md bg-gradient-to-r from-indigo-500/80 to-purple-600/80 border-indigo-400/50 hover:from-indigo-600/90 hover:to-purple-700/90">
+            <i class="fas fa-check mr-2"></i>
+            Finaliser les demandes
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- CTA Section -->
   <section class="relative py-20 overflow-hidden">
     <div class="absolute inset-0 bg-gradient-to-r from-indigo-600/30 to-purple-600/30"></div>
@@ -281,15 +324,15 @@
     <div class="relative px-4 mx-auto text-center max-w-7xl sm:px-6 lg:px-8">
       <div class="p-12 border shadow-2xl backdrop-blur-lg bg-gray-800/40 border-gray-600/40 rounded-2xl">
         <h2 class="mb-6 text-3xl font-bold text-white md:text-4xl">
-          Prêt à trouver vos produits en Chine ?
+          {{ cartItemCount > 0 ? 'Besoin d\'autres produits ?' : 'Prêt à trouver vos produits en Chine ?' }}
         </h2>
         <p class="max-w-2xl mx-auto mb-8 text-xl text-gray-300">
-          Commencez votre demande de sourcing dès maintenant. Sans compte, sans engagement.
+          {{ cartItemCount > 0 ? 'Ajoutez d\'autres produits à votre demande de sourcing.' : 'Commencez votre demande de sourcing dès maintenant. Sans compte, sans engagement.' }}
         </p>
         <div class="flex flex-col justify-center gap-4 sm:flex-row">
-          <a href="#demande"
+          <a routerLink="/mota/sourcing-request"
             class="px-8 py-4 text-lg font-semibold text-white transition duration-300 border rounded-lg shadow-lg backdrop-blur-md bg-gradient-to-r from-indigo-500/80 to-purple-600/80 border-indigo-400/50 hover:from-indigo-600/90 hover:to-purple-700/90 shadow-indigo-500/25">
-            Commencer une demande
+            {{ cartItemCount > 0 ? 'Ajouter un autre produit' : 'Commencer une demande' }}
           </a>
           <a href="#contact"
             class="px-8 py-4 text-lg font-semibold text-white transition duration-300 border rounded-lg backdrop-blur-md bg-white/10 border-white/20 hover:bg-white/20">
@@ -299,6 +342,23 @@
       </div>
     </div>
   </section>
+  <!-- Floating Cart Button -->
+  <div class="fixed bottom-6 right-6 z-50">
+    <a routerLink="/mota/cart" 
+       class="flex items-center justify-center w-16 h-16 text-white transition duration-300 border rounded-full shadow-2xl backdrop-blur-md bg-gradient-to-r from-indigo-500/90 to-purple-600/90 border-indigo-400/50 hover:from-indigo-600 hover:to-purple-700 hover:scale-110 relative group">
+      <i class="fas fa-shopping-cart text-xl"></i>
+      <span *ngIf="cartItemCount > 0" 
+            class="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full w-6 h-6 flex items-center justify-center animate-pulse">
+        {{ cartItemCount }}
+      </span>
+      <!-- Tooltip -->
+      <div class="absolute bottom-full right-0 mb-2 px-3 py-1 text-sm text-white bg-gray-800 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap">
+        {{ cartItemCount > 0 ? 'Panier (' + cartItemCount + ' article' + (cartItemCount > 1 ? 's' : '') + ')' : 'Panier vide' }}
+        <div class="absolute top-full right-3 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-800"></div>
+      </div>
+    </a>
+  </div>
+
   <!-- Footer -->
   <app-footer></app-footer>
 </div>

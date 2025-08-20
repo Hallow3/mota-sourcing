@@ -1,0 +1,48 @@
+/* Dashboard specific styles */
+.dashboard-container {
+  min-height: calc(100vh - 80px);
+}
+
+.progress-bar {
+  transition: width 0.3s ease-in-out;
+}
+
+.order-card {
+  transition: all 0.3s ease;
+}
+
+.order-card:hover {
+  transform: translateY(-2px);
+}
+
+.timeline-line {
+  position: relative;
+}
+
+.timeline-line::before {
+  content: '';
+  position: absolute;
+  left: 15px;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: linear-gradient(to bottom, #4f46e5, #06b6d4);
+}
+
+.timeline-item {
+  position: relative;
+  padding-left: 3rem;
+}
+
+.timeline-dot {
+  position: absolute;
+  left: 7px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 2px solid #1f2937;
+}
+
+.status-badge {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
