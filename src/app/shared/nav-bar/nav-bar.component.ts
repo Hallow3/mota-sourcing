@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { RouterModule } from '@angular/router';
+import { Component, inject, OnInit } from '@angular/core';
+import { Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -12,11 +12,18 @@ export class NavbarComponent{
   menu: boolean = false;
   user: boolean = false;
 
+  router = inject(Router);
+
   toggleMenu(){
     this.menu = !this.menu;
   }
 
   login(){
+    this.router.navigate(['/login']);
+  }
+
+  register(){
+    this.router.navigate(['/register']);
   }
 
   logout(){
