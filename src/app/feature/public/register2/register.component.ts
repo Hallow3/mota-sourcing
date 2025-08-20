@@ -18,6 +18,7 @@ export class RegisterComponent implements OnInit {
   isLoading = false;
   errorMessage = '';
   successMessage = '';
+  showSuccessCard = false;
   passwordStrength: any = { strength: 0, label: 'Very Weak', color: 'bg-red-500' };
   showPassword = false;
 
@@ -122,10 +123,7 @@ export class RegisterComponent implements OnInit {
       this.authService.register(registerRequest).subscribe({
         next: (response) => {
           this.isLoading = false;
-          this.successMessage = 'Registration successful! Please check your email and click the activation link to activate your account.';
-          setTimeout(() => {
-            this.router.navigate(['/login']);
-          }, 3000);
+          this.showSuccessCard = true;
         },
         error: (error) => {
           this.isLoading = false;
@@ -133,6 +131,10 @@ export class RegisterComponent implements OnInit {
         }
       });
     }
+  }
+
+  goToLogin(): void {
+    this.router.navigate(['/login']);
   }
 
   private getErrorMessage(error: any): string {

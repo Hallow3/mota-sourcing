@@ -23,7 +23,38 @@
       </p>
     </div>
     
-    <form class="mt-8 space-y-6" [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+    <!-- Success Card -->
+    <div *ngIf="showSuccessCard" class="text-center space-y-6">
+      <div class="mx-auto h-16 w-16 flex items-center justify-center rounded-full bg-green-500/20 border border-green-400/30">
+        <svg class="h-8 w-8 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+        </svg>
+      </div>
+      
+      <div>
+        <h3 class="text-2xl font-bold text-white mb-4">Account Created Successfully!</h3>
+        <p class="text-gray-300 mb-6">We've sent a verification email to your inbox. Please check your email and click the activation link to complete your registration.</p>
+        
+        <div class="bg-indigo-900/30 border border-indigo-500/50 rounded-xl p-4 mb-6">
+          <p class="text-indigo-300 text-sm">
+            <strong>Next steps:</strong><br>
+            1. Check your email inbox<br>
+            2. Click the activation link<br>
+            3. Return to login
+          </p>
+        </div>
+        
+        <button
+          (click)="goToLogin()"
+          class="w-full py-3 px-4 border border-transparent text-sm font-medium rounded-xl text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all duration-200 shadow-lg"
+        >
+          Go to Login
+        </button>
+      </div>
+    </div>
+
+    <!-- Registration Form -->
+    <form *ngIf="!showSuccessCard" class="mt-8 space-y-6" [formGroup]="registerForm" (ngSubmit)="onSubmit()">
       <div class="space-y-5">
         <!-- First Name & Last Name -->
         <div class="grid grid-cols-2 gap-4">
