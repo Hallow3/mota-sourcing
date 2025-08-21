@@ -10,12 +10,12 @@
   <div class="absolute top-1/4 left-1/4 w-72 h-72 bg-indigo-500/10 rounded-full blur-3xl"></div>
   <div class="absolute bottom-1/4 right-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl"></div>
 
-  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 relative">
-    <div class="mb-8 text-center">
-      <h1 class="text-4xl font-bold text-white mb-4">
+  <div class="max-w-6xl mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-8 relative">
+    <div class="mb-6 sm:mb-8 text-center pt-12 sm:pt-0">
+      <h1 class="text-2xl sm:text-4xl font-bold text-white mb-2 sm:mb-4">
         Votre <span class="text-transparent bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text">Panier</span>
       </h1>
-      <p class="text-xl text-gray-300">
+      <p class="text-lg sm:text-xl text-gray-300">
         Vérifiez vos demandes avant de finaliser
       </p>
     </div>
@@ -33,10 +33,10 @@
       </button>
     </div>
     
-    <div *ngIf="cartItems.length > 0" class="grid lg:grid-cols-3 gap-8">
+    <div *ngIf="cartItems.length > 0" class="flex flex-col lg:grid lg:grid-cols-3 gap-4 sm:gap-8">
       <!-- Cart Items -->
-      <div class="lg:col-span-2 space-y-6">
-        <div *ngFor="let item of cartItems; trackBy: trackByItemId" class="p-6 border shadow-xl backdrop-blur-md bg-gray-800/40 border-gray-600/40 rounded-2xl">
+      <div class="lg:col-span-2 space-y-4 sm:space-y-6 order-2 lg:order-1">
+        <div *ngFor="let item of cartItems; trackBy: trackByItemId" class="p-4 sm:p-6 border shadow-xl backdrop-blur-md bg-gray-800/40 border-gray-600/40 rounded-2xl">
           <div class="flex justify-between items-start mb-4">
             <div class="flex gap-4 flex-1">
               <!-- Product Image -->
@@ -150,8 +150,8 @@
       </div>
 
       <!-- Cart Summary -->
-      <div class="lg:col-span-1">
-        <div class="p-6 border shadow-xl backdrop-blur-md bg-gray-800/40 border-gray-600/40 rounded-2xl sticky top-8">
+      <div class="lg:col-span-1 order-1 lg:order-2">
+        <div class="p-4 sm:p-6 border shadow-xl backdrop-blur-md bg-gray-800/40 border-gray-600/40 rounded-2xl lg:sticky lg:top-8">
           <h3 class="text-xl font-semibold text-white mb-6">Récapitulatif</h3>
           
           <div class="space-y-4 mb-6">

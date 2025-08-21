@@ -33,44 +33,44 @@
       </button>
     </div>
 
-    <form *ngIf="cartItems.length > 0" [formGroup]="checkoutForm" (ngSubmit)="onSubmit()" class="grid lg:grid-cols-3 gap-8">
+    <form *ngIf="cartItems.length > 0" [formGroup]="checkoutForm" (ngSubmit)="onSubmit()" class="flex flex-col lg:grid lg:grid-cols-3 gap-4 sm:gap-8 pb-20 lg:pb-0" id="checkoutForm">
       <!-- Customer Information Form -->
-      <div class="lg:col-span-2 space-y-6">
+      <div class="lg:col-span-2 space-y-4 sm:space-y-6 order-2 lg:order-1">
         <!-- User Info for Authenticated Users -->
-        <div *ngIf="isAuthenticated && currentUser" class="p-6 border shadow-xl backdrop-blur-md bg-emerald-500/10 border-emerald-400/30 rounded-2xl">
+        <div *ngIf="isAuthenticated && currentUser" class="p-4 sm:p-6 border shadow-xl backdrop-blur-md bg-emerald-500/10 border-emerald-400/30 rounded-2xl">
           <div class="flex items-center mb-4">
-            <svg class="w-6 h-6 mr-3 text-emerald-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg class="w-5 h-5 sm:w-6 sm:h-6 mr-2 sm:mr-3 text-emerald-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
             </svg>
-            <h3 class="text-xl font-semibold text-emerald-300">Informations utilisateur</h3>
+            <h3 class="text-lg sm:text-xl font-semibold text-emerald-300">Informations utilisateur</h3>
           </div>
-          <div class="grid md:grid-cols-2 gap-4 text-sm">
-            <div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 text-sm">
+            <div class="flex flex-col sm:block">
               <span class="text-gray-400">Nom complet:</span>
-              <span class="text-white font-medium ml-2">{{ currentUser.firstName }} {{ currentUser.lastName }}</span>
+              <span class="text-white font-medium sm:ml-2">{{ currentUser.firstName }} {{ currentUser.lastName }}</span>
             </div>
-            <div>
+            <div class="flex flex-col sm:block">
               <span class="text-gray-400">Email:</span>
-              <span class="text-white font-medium ml-2">{{ currentUser.email }}</span>
+              <span class="text-white font-medium sm:ml-2 break-all">{{ currentUser.email }}</span>
             </div>
-            <div *ngIf="currentUser.phone">
+            <div *ngIf="currentUser.phone" class="flex flex-col sm:block">
               <span class="text-gray-400">Téléphone:</span>
-              <span class="text-white font-medium ml-2">{{ currentUser.phone }}</span>
+              <span class="text-white font-medium sm:ml-2">{{ currentUser.phone }}</span>
             </div>
-            <div *ngIf="currentUser.company">
+            <div *ngIf="currentUser.company" class="flex flex-col sm:block">
               <span class="text-gray-400">Entreprise:</span>
-              <span class="text-white font-medium ml-2">{{ currentUser.company }}</span>
+              <span class="text-white font-medium sm:ml-2">{{ currentUser.company }}</span>
             </div>
           </div>
         </div>
         <!-- Personal Information -->
-        <div *ngIf="!isAuthenticated" class="p-6 border shadow-xl backdrop-blur-md bg-gray-800/40 border-gray-600/40 rounded-2xl">
-          <h3 class="text-xl font-semibold text-white mb-6 flex items-center">
-            <i class="fas fa-user mr-3 text-indigo-400"></i>
+        <div *ngIf="!isAuthenticated" class="p-4 sm:p-6 border shadow-xl backdrop-blur-md bg-gray-800/40 border-gray-600/40 rounded-2xl">
+          <h3 class="text-lg sm:text-xl font-semibold text-white mb-4 sm:mb-6 flex items-center">
+            <i class="fas fa-user mr-2 sm:mr-3 text-indigo-400"></i>
             Informations personnelles
           </h3>
           
-          <div class="grid md:grid-cols-2 gap-4">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label class="block text-sm font-medium text-gray-300 mb-2">Prénom *</label>
               <input 
@@ -132,13 +132,13 @@
         </div>
 
         <!-- Shipping Information -->
-        <div class="p-6 border shadow-xl backdrop-blur-md bg-gray-800/40 border-gray-600/40 rounded-2xl">
-          <h3 class="text-xl font-semibold text-white mb-6 flex items-center">
-            <i class="fas fa-shipping-fast mr-3 text-indigo-400"></i>
+        <div class="p-4 sm:p-6 border shadow-xl backdrop-blur-md bg-gray-800/40 border-gray-600/40 rounded-2xl">
+          <h3 class="text-lg sm:text-xl font-semibold text-white mb-4 sm:mb-6 flex items-center">
+            <i class="fas fa-shipping-fast mr-2 sm:mr-3 text-indigo-400"></i>
             Informations de livraison
           </h3>
           
-          <div class="grid md:grid-cols-2 gap-4">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div class="md:col-span-2">
               <label class="block text-sm font-medium text-gray-300 mb-2">Pays *</label>
               <select 
@@ -209,58 +209,58 @@
         </div>
 
         <!-- Terms and Conditions -->
-        <div class="p-6 border shadow-xl backdrop-blur-md bg-gray-800/40 border-gray-600/40 rounded-2xl">
+        <div class="p-4 sm:p-6 border shadow-xl backdrop-blur-md bg-gray-800/40 border-gray-600/40 rounded-2xl">
           <div class="flex items-start">
             <input 
               type="checkbox" 
               id="terms"
               formControlName="acceptTerms"
-              class="mt-1 w-5 h-5 text-indigo-600 bg-gray-700/50 border-gray-600/50 rounded focus:ring-indigo-500 focus:ring-2">
-            <label for="terms" class="ml-3 text-sm text-gray-300">
+              class="mt-1 w-4 h-4 sm:w-5 sm:h-5 text-indigo-600 bg-gray-700/50 border-gray-600/50 rounded focus:ring-indigo-500 focus:ring-2 flex-shrink-0">
+            <label for="terms" class="ml-2 sm:ml-3 text-xs sm:text-sm text-gray-300">
               J'accepte les 
-              <a href="#" class="text-indigo-400 hover:text-indigo-300 transition">conditions générales</a> 
+              <a href="#" class="text-indigo-400 hover:text-indigo-300 transition underline">conditions générales</a> 
               et la 
-              <a href="#" class="text-indigo-400 hover:text-indigo-300 transition">politique de confidentialité</a>
+              <a href="#" class="text-indigo-400 hover:text-indigo-300 transition underline">politique de confidentialité</a>
               de MOTA Sourcing *
             </label>
           </div>
-          <div *ngIf="checkoutForm.get('acceptTerms')?.invalid && checkoutForm.get('acceptTerms')?.touched" class="text-red-400 text-sm mt-2 ml-8">
+          <div *ngIf="checkoutForm.get('acceptTerms')?.invalid && checkoutForm.get('acceptTerms')?.touched" class="text-red-400 text-xs sm:text-sm mt-2 ml-6 sm:ml-8">
             Vous devez accepter les conditions générales
           </div>
         </div>
       </div>
 
       <!-- Order Summary -->
-      <div class="lg:col-span-1">
-        <div class="p-6 border shadow-xl backdrop-blur-md bg-gray-800/40 border-gray-600/40 rounded-2xl sticky top-8">
-          <h3 class="text-xl font-semibold text-white mb-6 flex items-center">
-            <i class="fas fa-clipboard-list mr-3 text-indigo-400"></i>
+      <div class="lg:col-span-1 order-1 lg:order-2">
+        <div class="p-4 sm:p-6 border shadow-xl backdrop-blur-md bg-gray-800/40 border-gray-600/40 rounded-2xl lg:sticky lg:top-8">
+          <h3 class="text-lg sm:text-xl font-semibold text-white mb-4 sm:mb-6 flex items-center">
+            <i class="fas fa-clipboard-list mr-2 sm:mr-3 text-indigo-400"></i>
             Récapitulatif
           </h3>
           
           <!-- Cart Items Summary -->
-          <div class="space-y-4 mb-6">
-            <div *ngFor="let item of cartItems; trackBy: trackByItemId" class="p-4 bg-gray-700/30 rounded-xl">
-              <div class="flex gap-3 mb-2">
+          <div class="space-y-3 sm:space-y-4 mb-4 sm:mb-6">
+            <div *ngFor="let item of cartItems; trackBy: trackByItemId" class="p-3 sm:p-4 bg-gray-700/30 rounded-xl">
+              <div class="flex gap-2 sm:gap-3 mb-2">
                 <!-- Product Image -->
                 <div *ngIf="item.rfqRequest.productImage" class="flex-shrink-0">
-                  <img [src]="item.rfqRequest.productImage" alt="Image du produit" class="w-12 h-12 object-cover rounded border border-gray-600">
+                  <img [src]="item.rfqRequest.productImage" alt="Image du produit" class="w-10 h-10 sm:w-12 sm:h-12 object-cover rounded border border-gray-600">
                 </div>
-                <div *ngIf="!item.rfqRequest.productImage" class="flex-shrink-0 w-12 h-12 bg-gray-600 rounded flex items-center justify-center border border-gray-500">
-                  <i class="fas fa-image text-gray-400 text-sm"></i>
+                <div *ngIf="!item.rfqRequest.productImage" class="flex-shrink-0 w-10 h-10 sm:w-12 sm:h-12 bg-gray-600 rounded flex items-center justify-center border border-gray-500">
+                  <i class="fas fa-image text-gray-400 text-xs sm:text-sm"></i>
                 </div>
                 
-                <div class="flex-1">
-                  <h4 class="font-semibold text-white mb-1">{{ item.category.name }}</h4>
-                  <p class="text-sm text-gray-400 mb-2">{{ item.rfqRequest.productDescription | slice:0:80 }}...</p>
+                <div class="flex-1 min-w-0">
+                  <h4 class="font-semibold text-white mb-1 text-sm sm:text-base truncate">{{ item.category.name }}</h4>
+                  <p class="text-xs sm:text-sm text-gray-400 mb-2 line-clamp-2">{{ item.rfqRequest.productDescription | slice:0:60 }}...</p>
                 </div>
               </div>
               
-              <div class="flex justify-between text-sm">
-                <span class="text-gray-400">Quantité: {{ item.rfqRequest.quantity }}</span>
+              <div class="flex justify-between text-xs sm:text-sm">
+                <span class="text-gray-400">Qty: {{ item.rfqRequest.quantity }}</span>
                 <span class="text-indigo-300 font-medium">{{ formatPrice(item.totalPrice) }}</span>
               </div>
-              <div *ngIf="item.options.length > 0" class="mt-2 text-xs text-gray-500">
+              <div *ngIf="item.options.length > 0" class="mt-2 text-xs text-gray-500 truncate">
                 Options: {{ getOptionsText(item.options) }}
               </div>
             </div>
@@ -277,50 +277,78 @@
             </p>
           </div>
 
-          <!-- Submit Button -->
-          <button 
-            type="submit"
-            [disabled]="(isAuthenticated ? !isShippingFormValid() : checkoutForm.invalid) || isSubmitting"
-            class="w-full px-6 py-4 bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 disabled:from-gray-600 disabled:to-gray-700 disabled:cursor-not-allowed text-white rounded-xl transition duration-300 shadow-lg shadow-indigo-500/25 font-semibold relative">
-            <span *ngIf="!isSubmitting">Finaliser les demandes</span>
-            <span *ngIf="isSubmitting" class="flex items-center justify-center">
-              <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-              </svg>
-              Traitement en cours...
-            </span>
-          </button>
+          <!-- Desktop Buttons -->
+          <div class="hidden lg:block space-y-3">
+            <button 
+              type="submit"
+              [disabled]="(isAuthenticated ? !isShippingFormValid() : checkoutForm.invalid) || isSubmitting"
+              class="w-full px-6 py-4 bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 disabled:from-gray-600 disabled:to-gray-700 disabled:cursor-not-allowed text-white rounded-xl transition duration-300 shadow-lg shadow-indigo-500/25 font-semibold relative">
+              <span *ngIf="!isSubmitting">Finaliser les demandes</span>
+              <span *ngIf="isSubmitting" class="flex items-center justify-center">
+                <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                Traitement en cours...
+              </span>
+            </button>
 
-          <button 
-            type="button"
-            routerLink="/mota/cart"
-            class="w-full mt-3 px-6 py-3 text-gray-300 hover:text-white border border-gray-600/50 rounded-xl hover:bg-gray-700/40 transition duration-300">
-            Retour au panier
-          </button>
+            <button 
+              type="button"
+              routerLink="/mota/cart"
+              class="w-full px-6 py-3 text-gray-300 hover:text-white border border-gray-600/50 rounded-xl hover:bg-gray-700/40 transition duration-300">
+              Retour au panier
+            </button>
+          </div>
 
           <!-- Information Box -->
-          <div class="mt-6 p-4 bg-emerald-500/10 rounded-xl border border-emerald-400/30">
+          <div class="mt-4 sm:mt-6 p-3 sm:p-4 bg-emerald-500/10 rounded-xl border border-emerald-400/30">
             <div class="flex items-start">
-              <i class="fas fa-shield-alt text-emerald-300 mt-1 mr-3"></i>
-              <div class="text-sm text-gray-300">
+              <i class="fas fa-shield-alt text-emerald-300 mt-1 mr-2 sm:mr-3 text-sm"></i>
+              <div class="text-xs sm:text-sm text-gray-300">
                 <p class="font-medium mb-1">Engagement qualité</p>
-                <p>Sourcing professionnel, devis détaillés sous 24h, accompagnement personnalisé.</p>
+                <p>Sourcing professionnel, devis détaillés sous 24h.</p>
               </div>
             </div>
           </div>
 
-          <div class="mt-4 p-4 bg-indigo-500/10 rounded-xl border border-indigo-400/30">
+          <div class="mt-3 sm:mt-4 p-3 sm:p-4 bg-indigo-500/10 rounded-xl border border-indigo-400/30">
             <div class="flex items-start">
-              <i class="fas fa-clock text-indigo-300 mt-1 mr-3"></i>
-              <div class="text-sm text-gray-300">
+              <i class="fas fa-clock text-indigo-300 mt-1 mr-2 sm:mr-3 text-sm"></i>
+              <div class="text-xs sm:text-sm text-gray-300">
                 <p class="font-medium mb-1">Processus rapide</p>
-                <p>Réception des devis dans les 24h, première commande d'échantillons gratuite.</p>
+                <p>Réception des devis dans les 24h, échantillons gratuits.</p>
               </div>
             </div>
           </div>
         </div>
       </div>
     </form>
+
+    <!-- Mobile Fixed Bottom Button -->
+    <div *ngIf="cartItems.length > 0" class="fixed bottom-0 left-0 right-0 lg:hidden bg-gray-900/95 backdrop-blur-md border-t border-gray-600/50 p-4 z-50">
+      <div class="flex gap-3">
+        <button 
+          type="button"
+          routerLink="/mota/cart"
+          class="flex-1 px-4 py-3 text-gray-300 hover:text-white border border-gray-600/50 rounded-xl hover:bg-gray-700/40 transition duration-300 text-sm">
+          Retour
+        </button>
+        <button 
+          type="submit"
+          form="checkoutForm"
+          [disabled]="(isAuthenticated ? !isShippingFormValid() : checkoutForm.invalid) || isSubmitting"
+          class="flex-[2] px-4 py-3 bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 disabled:from-gray-600 disabled:to-gray-700 disabled:cursor-not-allowed text-white rounded-xl transition duration-300 shadow-lg font-semibold text-sm">
+          <span *ngIf="!isSubmitting">Finaliser</span>
+          <span *ngIf="isSubmitting" class="flex items-center justify-center">
+            <svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            En cours...
+          </span>
+        </button>
+      </div>
+    </div>
   </div>
 </div>

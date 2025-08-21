@@ -3,71 +3,71 @@
   <div class="absolute top-1/4 left-1/4 w-72 h-72 bg-indigo-500/10 rounded-full blur-3xl"></div>
   <div class="absolute bottom-1/4 right-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl"></div>
 
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 relative">
+  <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-8 relative">
     <!-- Header -->
-    <div class="mb-8">
-      <div class="flex items-center justify-between">
+    <div class="mb-6 sm:mb-8">
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 class="text-4xl font-bold text-white mb-2">
+          <h1 class="text-2xl sm:text-4xl font-bold text-white mb-2">
             Mon <span class="text-transparent bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text">Dashboard</span>
           </h1>
-          <p class="text-xl text-gray-300">Suivez vos commandes et l'avancement de vos projets</p>
+          <p class="text-lg sm:text-xl text-gray-300">Suivez vos commandes et l'avancement de vos projets</p>
         </div>
         <button 
           routerLink="/mota/sourcing-request"
-          class="px-6 py-3 bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white rounded-xl transition duration-300 shadow-lg shadow-indigo-500/25 font-semibold">
+          class="px-4 sm:px-6 py-2 sm:py-3 bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white rounded-xl transition duration-300 shadow-lg shadow-indigo-500/25 font-semibold text-sm sm:text-base">
           <i class="fas fa-plus mr-2"></i>
-          Nouvelle commande
+          <span class="hidden sm:inline">Nouvelle </span>Commande
         </button>
       </div>
     </div>
 
     <!-- Summary Cards -->
-    <div *ngIf="orderSummary" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-      <div class="p-6 border shadow-xl backdrop-blur-md bg-gray-800/40 border-gray-600/40 rounded-2xl">
+    <div *ngIf="orderSummary" class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 mb-6 sm:mb-8">
+      <div class="p-3 sm:p-6 border shadow-xl backdrop-blur-md bg-gray-800/40 border-gray-600/40 rounded-2xl">
         <div class="flex items-center">
-          <div class="p-3 rounded-full bg-indigo-500/20 border border-indigo-400/30">
-            <i class="fas fa-shopping-bag text-indigo-300 text-xl"></i>
+          <div class="p-2 sm:p-3 rounded-full bg-indigo-500/20 border border-indigo-400/30">
+            <i class="fas fa-shopping-bag text-indigo-300 text-sm sm:text-xl"></i>
           </div>
-          <div class="ml-4">
-            <p class="text-sm text-gray-400">Total commandes</p>
-            <p class="text-2xl font-bold text-white">{{ orderSummary.totalOrders }}</p>
+          <div class="ml-2 sm:ml-4">
+            <p class="text-xs sm:text-sm text-gray-400">Total commandes</p>
+            <p class="text-lg sm:text-2xl font-bold text-white">{{ orderSummary.totalOrders }}</p>
           </div>
         </div>
       </div>
 
-      <div class="p-6 border shadow-xl backdrop-blur-md bg-gray-800/40 border-gray-600/40 rounded-2xl">
+      <div class="p-3 sm:p-6 border shadow-xl backdrop-blur-md bg-gray-800/40 border-gray-600/40 rounded-2xl">
         <div class="flex items-center">
-          <div class="p-3 rounded-full bg-yellow-500/20 border border-yellow-400/30">
-            <i class="fas fa-clock text-yellow-300 text-xl"></i>
+          <div class="p-2 sm:p-3 rounded-full bg-yellow-500/20 border border-yellow-400/30">
+            <i class="fas fa-clock text-yellow-300 text-sm sm:text-xl"></i>
           </div>
-          <div class="ml-4">
-            <p class="text-sm text-gray-400">En cours</p>
-            <p class="text-2xl font-bold text-white">{{ orderSummary.pendingOrders }}</p>
+          <div class="ml-2 sm:ml-4">
+            <p class="text-xs sm:text-sm text-gray-400">En cours</p>
+            <p class="text-lg sm:text-2xl font-bold text-white">{{ orderSummary.pendingOrders }}</p>
           </div>
         </div>
       </div>
 
-      <div class="p-6 border shadow-xl backdrop-blur-md bg-gray-800/40 border-gray-600/40 rounded-2xl">
+      <div class="p-3 sm:p-6 border shadow-xl backdrop-blur-md bg-gray-800/40 border-gray-600/40 rounded-2xl">
         <div class="flex items-center">
-          <div class="p-3 rounded-full bg-green-500/20 border border-green-400/30">
-            <i class="fas fa-check-circle text-green-300 text-xl"></i>
+          <div class="p-2 sm:p-3 rounded-full bg-green-500/20 border border-green-400/30">
+            <i class="fas fa-check-circle text-green-300 text-sm sm:text-xl"></i>
           </div>
-          <div class="ml-4">
-            <p class="text-sm text-gray-400">Terminées</p>
-            <p class="text-2xl font-bold text-white">{{ orderSummary.completedOrders }}</p>
+          <div class="ml-2 sm:ml-4">
+            <p class="text-xs sm:text-sm text-gray-400">Terminées</p>
+            <p class="text-lg sm:text-2xl font-bold text-white">{{ orderSummary.completedOrders }}</p>
           </div>
         </div>
       </div>
 
-      <div class="p-6 border shadow-xl backdrop-blur-md bg-gray-800/40 border-gray-600/40 rounded-2xl">
+      <div class="p-3 sm:p-6 border shadow-xl backdrop-blur-md bg-gray-800/40 border-gray-600/40 rounded-2xl col-span-2 lg:col-span-1">
         <div class="flex items-center">
-          <div class="p-3 rounded-full bg-emerald-500/20 border border-emerald-400/30">
-            <i class="fas fa-chart-line text-emerald-300 text-xl"></i>
+          <div class="p-2 sm:p-3 rounded-full bg-emerald-500/20 border border-emerald-400/30">
+            <i class="fas fa-chart-line text-emerald-300 text-sm sm:text-xl"></i>
           </div>
-          <div class="ml-4">
-            <p class="text-sm text-gray-400">Total dépensé</p>
-            <p class="text-2xl font-bold text-white">{{ formatPrice(orderSummary.totalSpent) }}</p>
+          <div class="ml-2 sm:ml-4">
+            <p class="text-xs sm:text-sm text-gray-400">Total dépensé</p>
+            <p class="text-lg sm:text-2xl font-bold text-white">{{ formatPrice(orderSummary.totalSpent) }}</p>
           </div>
         </div>
       </div>
@@ -75,9 +75,9 @@
 
     <!-- Orders List -->
     <div class="grid lg:grid-cols-1 gap-8">
-      <div class="p-6 border shadow-xl backdrop-blur-md bg-gray-800/40 border-gray-600/40 rounded-2xl">
-        <h2 class="text-2xl font-bold text-white mb-6 flex items-center">
-          <i class="fas fa-list-ul mr-3 text-indigo-400"></i>
+      <div class="p-4 sm:p-6 border shadow-xl backdrop-blur-md bg-gray-800/40 border-gray-600/40 rounded-2xl">
+        <h2 class="text-xl sm:text-2xl font-bold text-white mb-4 sm:mb-6 flex items-center">
+          <i class="fas fa-list-ul mr-2 sm:mr-3 text-indigo-400"></i>
           Mes Commandes
         </h2>
 
