@@ -268,12 +268,20 @@
 
           <!-- Total -->
           <div class="border-t border-gray-600/30 pt-4 mb-6">
+            <div *ngIf="hasFirstItemDiscount()" class="flex justify-between text-sm mb-2">
+              <span class="text-gray-400">Sous-total</span>
+              <span class="text-gray-300">{{ formatPrice(sourcingService.getCartTotal()) }}</span>
+            </div>
+            <div *ngIf="hasFirstItemDiscount()" class="flex justify-between text-sm mb-3">
+              <span class="text-emerald-400">Premier sourcing gratuit</span>
+              <span class="text-emerald-400">-{{ formatPrice(getFirstItemDiscount()) }}</span>
+            </div>
             <div class="flex justify-between text-lg">
               <span class="text-white font-semibold">Total estimé</span>
               <span class="text-2xl font-bold text-indigo-300">{{ getTotalPriceFormatted() }}</span>
             </div>
             <p class="text-sm text-gray-400 mt-2">
-              Premier sourcing gratuit - Paiement après acceptation du devis
+              <span *ngIf="!isAuthenticated">Premier sourcing gratuit - </span>Paiement après acceptation du devis
             </p>
           </div>
 

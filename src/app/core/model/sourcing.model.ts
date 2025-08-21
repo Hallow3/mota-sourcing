@@ -1,3 +1,5 @@
+import { UserResponse } from './auth.models';
+
 export interface SourcingCategory {
   id: number;
   name: string;
@@ -36,18 +38,10 @@ export interface SourcingOption {
 }
 
 export interface CheckoutData {
-  customerInfo: CustomerInfo;
   shippingInfo: ShippingInfo;
   cartItems: CartItem[];
   totalAmount: number;
-}
-
-export interface CustomerInfo {
-  firstName: string;
-  lastName: string;
-  email: string;
-  phone: string;
-  company?: string;
+  user?: UserResponse;
 }
 
 export interface ShippingInfo {
@@ -85,7 +79,7 @@ export interface Order {
   id: string;
   orderNumber: string;
   cartItems: CartItem[];
-  customerInfo: CustomerInfo;
+  user?: UserResponse;
   shippingInfo: ShippingInfo;
   totalAmount: number;
   status: OrderStatus;
@@ -111,4 +105,18 @@ export interface OrderSummary {
   pendingOrders: number;
   completedOrders: number;
   totalSpent: number;
+}
+
+export interface SourcingRequestPayload {
+  shippingInfo: ShippingInfo;
+  cartItems: CartItem[];
+  totalAmount: number;
+  user?: UserResponse;
+}
+
+export interface SourcingRequestResponse {
+  success: boolean;
+  message: string;
+  orderId?: string;
+  orderNumber?: string;
 }

@@ -6,7 +6,8 @@ import { SourcingService } from '../../../core/service/sourcing.service';
 import { CurrencyService } from '../../../core/service/currency.service';
 import { OrderService } from '../../../core/service/order.service';
 import { AuthService } from '../../../core/service/auth.service';
-import { CartItem, CustomerInfo, ShippingInfo } from '../../../core/model/sourcing.model';
+import { SourcingRequestService } from '../../../core/service/sourcing-request.service';
+import { CartItem, ShippingInfo, SourcingRequestPayload } from '../../../core/model/sourcing.model';
 import { UserResponse } from '../../../core/model/auth.models';
 
 @Component({
@@ -18,10 +19,11 @@ import { UserResponse } from '../../../core/model/auth.models';
 export class CheckoutComponent implements OnInit {
   private fb = inject(FormBuilder);
   private router = inject(Router);
-  private sourcingService = inject(SourcingService);
+  public sourcingService = inject(SourcingService);
   private currencyService = inject(CurrencyService);
   private orderService = inject(OrderService);
   private authService = inject(AuthService);
+  private sourcingRequestService = inject(SourcingRequestService);
 
   checkoutForm: FormGroup;
   cartItems: CartItem[] = [];
@@ -90,7 +92,13 @@ export class CheckoutComponent implements OnInit {
   }
 
   getTotalPrice(): number {
-    return this.sourcingService.getCartTotal();
+    const total = this.sourcingService.getCartTotal();
+    // Premier sourcing gratuit pour les utilisateurs non connectés
+    if (!this.isAuthenticated && this.cartItems.length > 0) {
+      const firstItemPrice = this.cartItems[0].totalPrice;
+      return Math.max(0, total - firstItemPrice);
+    }
+    return total;
   }
 
   getTotalPriceFormatted(): string {
@@ -109,6 +117,17 @@ export class CheckoutComponent implements OnInit {
     return item.id;
   }
 
+  getFirstItemDiscount(): number {
+    if (!this.isAuthenticated && this.cartItems.length > 0) {
+      return this.cartItems[0].totalPrice;
+    }
+    return 0;
+  }
+
+  hasFirstItemDiscount(): boolean {
+    return !this.isAuthenticated && this.cartItems.length > 0;
+  }
+
   onSubmit(): void {
     const isFormValid = this.isAuthenticated ? 
       this.isShippingFormValid() : 
@@ -116,21 +135,6 @@ export class CheckoutComponent implements OnInit {
       
     if (isFormValid && this.cartItems.length > 0) {
       this.isSubmitting = true;
-
-      // Create customer info - use current user data if authenticated
-      const customerInfo: CustomerInfo = this.isAuthenticated && this.currentUser ? {
-        firstName: this.currentUser.firstName,
-        lastName: this.currentUser.lastName,
-        email: this.currentUser.email,
-        phone: this.currentUser.phone || this.checkoutForm.getRawValue().phone,
-        company: this.currentUser.company || this.checkoutForm.getRawValue().company || undefined
-      } : {
-        firstName: this.checkoutForm.value.firstName,
-        lastName: this.checkoutForm.value.lastName,
-        email: this.checkoutForm.value.email,
-        phone: this.checkoutForm.value.phone,
-        company: this.checkoutForm.value.company || undefined
-      };
 
       const shippingInfo: ShippingInfo = {
         country: this.checkoutForm.value.country,
@@ -140,22 +144,34 @@ export class CheckoutComponent implements OnInit {
         logisticsPreferences: this.checkoutForm.value.logisticsPreferences || undefined
       };
 
-      // Simulate API call
-      setTimeout(() => {
-        // Create order
-        const newOrder = this.orderService.createOrder(this.cartItems, customerInfo, shippingInfo);
-        
-        // Clear cart
-        this.sourcingService.clearCart();
-        
-        // Navigate to dashboard with success message
-        this.router.navigate(['/mota/dashboard'], { 
-          queryParams: { 
-            success: true, 
-            order: newOrder.orderNumber 
-          } 
-        });
-      }, 2000);
+      const payload: SourcingRequestPayload = {
+        shippingInfo,
+        cartItems: this.cartItems,
+        totalAmount: this.getTotalPrice(),
+        user: this.currentUser || undefined
+      };
+
+      this.sourcingRequestService.submitSourcingRequest(payload).subscribe({
+        next: (response) => {
+          this.isSubmitting = false;
+          if (response.success) {
+            // Clear cart
+            this.sourcingService.clearCart();
+            
+            // Navigate to dashboard with success message
+            this.router.navigate(['/mota/dashboard'], { 
+              queryParams: { 
+                success: true, 
+                order: response.orderNumber 
+              } 
+            });
+          }
+        },
+        error: (error) => {
+          this.isSubmitting = false;
+          console.error('Error submitting sourcing request:', error);
+        }
+      });
     } else {
       // Mark all fields as touched to show validation errors
       Object.keys(this.checkoutForm.controls).forEach(key => {

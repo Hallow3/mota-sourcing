@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { Order, OrderStatus, OrderTracking, OrderSummary, CartItem, CustomerInfo, ShippingInfo } from '../model/sourcing.model';
+import { Order, OrderStatus, OrderTracking, OrderSummary, CartItem, ShippingInfo } from '../model/sourcing.model';
+import { UserResponse } from '../model/auth.models';
 
 @Injectable({
   providedIn: 'root'
@@ -64,13 +65,7 @@ export class OrderService {
         id: '1',
         orderNumber: 'MS240001',
         cartItems: [],
-        customerInfo: {
-          firstName: 'Jean',
-          lastName: 'Dupont',
-          email: 'jean.dupont@email.com',
-          phone: '+33123456789',
-          company: 'TechStart SAS'
-        },
+        user: { id: 1, firstName: 'Jean', lastName: 'Dupont', email: 'jean.dupont@email.com', userType: 'CLIENT', isActive: true, isEmailVerified: true, createdAt: '2024-01-01', updatedAt: '2024-01-01', roles: ['CLIENT'] } as UserResponse,
         shippingInfo: {
           country: 'FR',
           address: '123 Rue de la Paix',
@@ -122,12 +117,7 @@ export class OrderService {
         id: '2',
         orderNumber: 'MS240002',
         cartItems: [],
-        customerInfo: {
-          firstName: 'Marie',
-          lastName: 'Martin',
-          email: 'marie.martin@email.com',
-          phone: '+33987654321'
-        },
+        user: { id: 2, firstName: 'Marie', lastName: 'Martin', email: 'marie.martin@email.com', userType: 'CLIENT', isActive: true, isEmailVerified: true, createdAt: '2024-01-01', updatedAt: '2024-01-01', roles: ['CLIENT'] } as UserResponse,
         shippingInfo: {
           country: 'FR',
           address: '456 Avenue des Champs',
@@ -169,13 +159,7 @@ export class OrderService {
         id: '3',
         orderNumber: 'MS240003',
         cartItems: [],
-        customerInfo: {
-          firstName: 'Pierre',
-          lastName: 'Bernard',
-          email: 'pierre.bernard@email.com',
-          phone: '+33456789123',
-          company: 'Innov Corp'
-        },
+        user: { id: 3, firstName: 'Pierre', lastName: 'Bernard', email: 'pierre.bernard@email.com', userType: 'CLIENT', isActive: true, isEmailVerified: true, createdAt: '2024-01-01', updatedAt: '2024-01-01', roles: ['CLIENT'] } as UserResponse,
         shippingInfo: {
           country: 'FR',
           address: '789 Boulevard Saint-Germain',
@@ -201,7 +185,7 @@ export class OrderService {
     ];
   }
 
-  createOrder(cartItems: CartItem[], customerInfo: CustomerInfo, shippingInfo: ShippingInfo): Order {
+  createOrder(cartItems: CartItem[], shippingInfo: ShippingInfo, user?: UserResponse): Order {
     const currentOrders = this.ordersSubject.value;
     const orderNumber = this.generateOrderNumber();
     const totalAmount = cartItems.reduce((total, item) => total + item.totalPrice, 0);
@@ -210,7 +194,7 @@ export class OrderService {
       id: Date.now().toString(),
       orderNumber,
       cartItems,
-      customerInfo,
+      user,
       shippingInfo,
       totalAmount,
       status: OrderStatus.PENDING,
