@@ -1,11 +1,13 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { SourcingService } from '../../../core/service/sourcing.service';
 import { CurrencyService } from '../../../core/service/currency.service';
 import { OrderService } from '../../../core/service/order.service';
+import { AuthService } from '../../../core/service/auth.service';
 import { CartItem, CustomerInfo, ShippingInfo } from '../../../core/model/sourcing.model';
+import { UserResponse } from '../../../core/model/auth.models';
 
 @Component({
   selector: 'app-checkout',
@@ -13,16 +15,19 @@ import { CartItem, CustomerInfo, ShippingInfo } from '../../../core/model/sourci
   imports: [CommonModule, ReactiveFormsModule, RouterModule],
   templateUrl: './checkout.component.html'
 })
-export class CheckoutComponent {
+export class CheckoutComponent implements OnInit {
   private fb = inject(FormBuilder);
   private router = inject(Router);
   private sourcingService = inject(SourcingService);
   private currencyService = inject(CurrencyService);
   private orderService = inject(OrderService);
+  private authService = inject(AuthService);
 
   checkoutForm: FormGroup;
   cartItems: CartItem[] = [];
   isSubmitting = false;
+  isAuthenticated = false;
+  currentUser: UserResponse | null = null;
 
   constructor() {
     this.checkoutForm = this.fb.group({
@@ -41,6 +46,46 @@ export class CheckoutComponent {
 
     this.sourcingService.cart$.subscribe(items => {
       this.cartItems = items;
+    });
+  }
+
+  ngOnInit(): void {
+    this.authService.isAuthenticated$.subscribe(isAuth => {
+      this.isAuthenticated = isAuth;
+    });
+    
+    this.authService.currentUser$.subscribe(user => {
+      this.currentUser = user;
+      if (user) {
+        this.prefillUserData(user);
+      }
+    });
+  }
+
+  private prefillUserData(user: UserResponse): void {
+    this.checkoutForm.patchValue({
+      firstName: user.firstName,
+      lastName: user.lastName,
+      email: user.email,
+      phone: user.phone || '',
+      company: user.company || ''
+    });
+    
+    // Disable user info fields for authenticated users
+    if (this.isAuthenticated) {
+      this.checkoutForm.get('firstName')?.disable();
+      this.checkoutForm.get('lastName')?.disable();
+      this.checkoutForm.get('email')?.disable();
+      this.checkoutForm.get('phone')?.disable();
+      this.checkoutForm.get('company')?.disable();
+    }
+  }
+
+  public isShippingFormValid(): boolean {
+    const shippingFields = ['country', 'address', 'city', 'zipCode', 'acceptTerms'];
+    return shippingFields.every(field => {
+      const control = this.checkoutForm.get(field);
+      return control && control.valid;
     });
   }
 
@@ -65,11 +110,21 @@ export class CheckoutComponent {
   }
 
   onSubmit(): void {
-    if (this.checkoutForm.valid && this.cartItems.length > 0) {
+    const isFormValid = this.isAuthenticated ? 
+      this.isShippingFormValid() : 
+      this.checkoutForm.valid;
+      
+    if (isFormValid && this.cartItems.length > 0) {
       this.isSubmitting = true;
 
-      // Create customer and shipping info
-      const customerInfo: CustomerInfo = {
+      // Create customer info - use current user data if authenticated
+      const customerInfo: CustomerInfo = this.isAuthenticated && this.currentUser ? {
+        firstName: this.currentUser.firstName,
+        lastName: this.currentUser.lastName,
+        email: this.currentUser.email,
+        phone: this.currentUser.phone || this.checkoutForm.getRawValue().phone,
+        company: this.currentUser.company || this.checkoutForm.getRawValue().company || undefined
+      } : {
         firstName: this.checkoutForm.value.firstName,
         lastName: this.checkoutForm.value.lastName,
         email: this.checkoutForm.value.email,

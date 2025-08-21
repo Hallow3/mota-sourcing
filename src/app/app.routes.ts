@@ -1,13 +1,17 @@
 import { Routes } from '@angular/router';
 import { HomeComponent } from './feature/public/home/home.component';
+import { AuthGuard } from './core/guard/auth.guard';
+import { GuestGuard } from './core/guard/guest.guard';
+import { AdminGuard } from './core/guard/admin.guard';
+import { ClientGuard } from './core/guard/client.guard';
 
 
 export const routes: Routes = [
     { path: '', redirectTo: 'mota', pathMatch: 'full' },
-    { path: 'login', loadComponent: () => import('./feature/public/login2/login.component').then(c => c.LoginComponent) },
-    { path: 'register', loadComponent: () => import('./feature/public/register2/register.component').then(c => c.RegisterComponent) },
-    { path: 'forgot-password', loadComponent: () => import('./feature/public/forgot-password/forgot-password.component').then(c => c.ForgotPasswordComponent) },
-    { path: 'reset-password', loadComponent: () => import('./feature/public/reset-password/reset-password.component').then(c => c.ResetPasswordComponent) },
+    { path: 'login', canActivate: [GuestGuard], loadComponent: () => import('./feature/public/login2/login.component').then(c => c.LoginComponent) },
+    { path: 'register', canActivate: [GuestGuard], loadComponent: () => import('./feature/public/register2/register.component').then(c => c.RegisterComponent) },
+    { path: 'forgot-password', canActivate: [GuestGuard], loadComponent: () => import('./feature/public/forgot-password/forgot-password.component').then(c => c.ForgotPasswordComponent) },
+    { path: 'reset-password', canActivate: [GuestGuard], loadComponent: () => import('./feature/public/reset-password/reset-password.component').then(c => c.ResetPasswordComponent) },
     { path: 'activate', loadComponent: () => import('./feature/public/activate-account/activate-account.component').then(c => c.ActivateAccountComponent) },
     {
         path: 'mota', children: [
@@ -47,9 +51,21 @@ export const routes: Routes = [
             },
             {
                 path: 'dashboard',
+                canActivate: [ClientGuard],
                 loadComponent: () => import('./feature/public/dashboard/dashboard.component').then(c => c.DashboardComponent),
             },
             { path: '**', component: HomeComponent }
+        ]
+    },
+    {
+        path: 'admin', 
+        canActivate: [AdminGuard],
+        children: [
+            { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+            {
+                path: 'dashboard',
+                loadComponent: () => import('./feature/admin/dashboard/admin-dashboard.component').then(c => c.AdminDashboardComponent),
+            }
         ]
     },
     { path: '**', component: HomeComponent }

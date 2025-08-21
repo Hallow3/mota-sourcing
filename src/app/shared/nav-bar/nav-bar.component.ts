@@ -1,6 +1,7 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { AuthService } from '../../core/service/auth.service';
 
 @Component({
   selector: 'app-navbar',
@@ -8,11 +9,18 @@ import { CommonModule } from '@angular/common';
   templateUrl: './nav-bar.component.html',
   styleUrl: './nav-bar.component.css'
 })
-export class NavbarComponent{
+export class NavbarComponent implements OnInit {
   menu: boolean = false;
-  user: boolean = false;
+  isAuthenticated: boolean = false;
 
-  router = inject(Router);
+  private router = inject(Router);
+  private authService = inject(AuthService);
+
+  ngOnInit(): void {
+    this.authService.isAuthenticated$.subscribe(isAuth => {
+      this.isAuthenticated = isAuth;
+    });
+  }
 
   toggleMenu(){
     this.menu = !this.menu;
@@ -27,6 +35,8 @@ export class NavbarComponent{
   }
 
   logout(){
+    this.authService.logout();
+    this.router.navigate(['/']);
   }
 
   profileManagement(){

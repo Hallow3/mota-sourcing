@@ -7,7 +7,7 @@ import { AuthService } from '../service/auth.service';
 @Injectable({
   providedIn: 'root'
 })
-export class GuestGuard implements CanActivate {
+export class AdminGuard implements CanActivate {
 
   constructor(
     private authService: AuthService,
@@ -15,14 +15,15 @@ export class GuestGuard implements CanActivate {
   ) {}
 
   canActivate(): Observable<boolean | UrlTree> {
-    return this.authService.isAuthenticated$.pipe(
+    return this.authService.currentUser$.pipe(
       take(1),
-      map(isAuthenticated => {
-        if (!isAuthenticated) {
+      map(user => {
+        if (user && user.userType === 'ADMIN') {
           return true;
+        } else if (user) {
+          return this.router.createUrlTree(['/mota/dashboard']);
         } else {
-          const redirectUrl = this.authService.getRedirectUrl();
-          return this.router.createUrlTree([redirectUrl]);
+          return this.router.createUrlTree(['/login']);
         }
       })
     );

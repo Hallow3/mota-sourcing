@@ -1,14 +1,21 @@
 <div class="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-indigo-900">
+  <!-- Back to home button -->
+  <a routerLink="/" class="absolute top-4 left-4 z-10 flex items-center text-gray-400 hover:text-gray-300 transition-colors duration-200">
+    <svg class="w-5 h-5 sm:w-6 sm:h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l-7 7m0 0l7 7m-7-7h18" />
+    </svg>
+    <span class="hidden sm:inline ml-2">Retourner a l'accueil</span>
+  </a>
   <!-- Background decoration -->
-  <div class="absolute top-1/4 left-1/4 w-72 h-72 bg-indigo-500/10 rounded-full blur-3xl"></div>
-  <div class="absolute bottom-1/4 right-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl"></div>
+  <div class="absolute top-1/4 left-1/4 w-32 h-32 sm:w-72 sm:h-72 bg-indigo-500/10 rounded-full blur-3xl"></div>
+  <div class="absolute bottom-1/4 right-1/4 w-48 h-48 sm:w-96 sm:h-96 bg-purple-500/10 rounded-full blur-3xl"></div>
 
-  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 relative">
-    <div class="mb-8 text-center">
-      <h1 class="text-4xl font-bold text-white mb-4">
+  <div class="max-w-6xl mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-8 relative">
+    <div class="mb-6 sm:mb-8 text-center pt-12 sm:pt-0">
+      <h1 class="text-2xl sm:text-4xl font-bold text-white mb-2 sm:mb-4">
         <span class="text-transparent bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text">Finaliser</span> votre demande
       </h1>
-      <p class="text-xl text-gray-300">
+      <p class="text-lg sm:text-xl text-gray-300">
         Dernière étape avant de recevoir vos devis
       </p>
     </div>
@@ -29,8 +36,35 @@
     <form *ngIf="cartItems.length > 0" [formGroup]="checkoutForm" (ngSubmit)="onSubmit()" class="grid lg:grid-cols-3 gap-8">
       <!-- Customer Information Form -->
       <div class="lg:col-span-2 space-y-6">
+        <!-- User Info for Authenticated Users -->
+        <div *ngIf="isAuthenticated && currentUser" class="p-6 border shadow-xl backdrop-blur-md bg-emerald-500/10 border-emerald-400/30 rounded-2xl">
+          <div class="flex items-center mb-4">
+            <svg class="w-6 h-6 mr-3 text-emerald-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            <h3 class="text-xl font-semibold text-emerald-300">Informations utilisateur</h3>
+          </div>
+          <div class="grid md:grid-cols-2 gap-4 text-sm">
+            <div>
+              <span class="text-gray-400">Nom complet:</span>
+              <span class="text-white font-medium ml-2">{{ currentUser.firstName }} {{ currentUser.lastName }}</span>
+            </div>
+            <div>
+              <span class="text-gray-400">Email:</span>
+              <span class="text-white font-medium ml-2">{{ currentUser.email }}</span>
+            </div>
+            <div *ngIf="currentUser.phone">
+              <span class="text-gray-400">Téléphone:</span>
+              <span class="text-white font-medium ml-2">{{ currentUser.phone }}</span>
+            </div>
+            <div *ngIf="currentUser.company">
+              <span class="text-gray-400">Entreprise:</span>
+              <span class="text-white font-medium ml-2">{{ currentUser.company }}</span>
+            </div>
+          </div>
+        </div>
         <!-- Personal Information -->
-        <div class="p-6 border shadow-xl backdrop-blur-md bg-gray-800/40 border-gray-600/40 rounded-2xl">
+        <div *ngIf="!isAuthenticated" class="p-6 border shadow-xl backdrop-blur-md bg-gray-800/40 border-gray-600/40 rounded-2xl">
           <h3 class="text-xl font-semibold text-white mb-6 flex items-center">
             <i class="fas fa-user mr-3 text-indigo-400"></i>
             Informations personnelles
@@ -246,7 +280,7 @@
           <!-- Submit Button -->
           <button 
             type="submit"
-            [disabled]="checkoutForm.invalid || isSubmitting"
+            [disabled]="(isAuthenticated ? !isShippingFormValid() : checkoutForm.invalid) || isSubmitting"
             class="w-full px-6 py-4 bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 disabled:from-gray-600 disabled:to-gray-700 disabled:cursor-not-allowed text-white rounded-xl transition duration-300 shadow-lg shadow-indigo-500/25 font-semibold relative">
             <span *ngIf="!isSubmitting">Finaliser les demandes</span>
             <span *ngIf="isSubmitting" class="flex items-center justify-center">

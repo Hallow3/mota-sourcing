@@ -1,7 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, FormArray, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router, RouterModule } from '@angular/router';
+import { Router, RouterModule, ActivatedRoute } from '@angular/router';
 import { SourcingService } from '../../../core/service/sourcing.service';
 import { CurrencyService } from '../../../core/service/currency.service';
 import { SourcingCategory, RFQRequest, SourcingOption, CartItem } from '../../../core/model/sourcing.model';
@@ -16,6 +16,7 @@ import { SourcingCategory, RFQRequest, SourcingOption, CartItem } from '../../..
 export class SourcingRequestFormComponent {
   private fb = inject(FormBuilder);
   private router = inject(Router);
+  private route = inject(ActivatedRoute);
   private sourcingService = inject(SourcingService);
   private currencyService = inject(CurrencyService);
 
@@ -39,6 +40,19 @@ export class SourcingRequestFormComponent {
 
     this.loadCategories();
     this.loadMockOptions();
+    this.handleCategoryPreselection();
+  }
+
+  handleCategoryPreselection(): void {
+    this.route.queryParams.subscribe(params => {
+      if (params['categoryId']) {
+        const categoryId = parseInt(params['categoryId']);
+        const category = this.categories.find(c => c.id === categoryId);
+        if (category) {
+          this.selectCategory(category);
+        }
+      }
+    });
   }
 
   loadCategories(): void {

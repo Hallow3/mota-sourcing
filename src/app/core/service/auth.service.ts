@@ -127,4 +127,12 @@ export class AuthService {
   isAuthenticated(): boolean {
     return this.isAuthenticatedSubject.value;
   }
+
+  getRedirectUrl(): string {
+    const user = this.getCurrentUser();
+    if (user) {
+      return user.userType === 'ADMIN' ? '/admin/dashboard' : '/mota/dashboard';
+    }
+    return '/mota/home';
+  }
 }

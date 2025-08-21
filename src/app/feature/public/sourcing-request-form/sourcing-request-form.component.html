@@ -1,57 +1,97 @@
-<div class="min-h-screen bg-gray-900">
-  <div class="container mx-auto p-8">
-    <h1 class="text-white text-2xl mb-8">Demande de Sourcing</h1>
+<div class="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-indigo-900 py-12 px-4 sm:px-6 lg:px-8">
+    <!-- Back to home button -->
+  <a routerLink="/" class="absolute top-4 left-4 flex items-center text-gray-400 hover:text-gray-300 transition-colors duration-200">
+    <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l-7 7m0 0l7 7m-7-7h18" />
+    </svg>
+    Retourner a l'accueil
+  </a>
+  <!-- Background decoration -->
+  <div class="absolute top-1/4 left-1/4 w-72 h-72 bg-indigo-500/10 rounded-full blur-3xl"></div>
+  <div class="absolute bottom-1/4 right-1/4 w-96 h-96 bg-gray-600/10 rounded-full blur-3xl"></div>
+  
+  <div class="relative max-w-4xl mx-auto">
+    <!-- Header -->
+    <div class="text-center mb-8">
+      <h1 class="text-4xl font-extrabold text-white tracking-tight mb-2">Demande de Sourcing</h1>
+      <p class="text-gray-400 text-lg">Décrivez votre besoin et obtenez les meilleurs prix</p>
+    </div>
     
-    <form [formGroup]="rfqForm" (ngSubmit)="onSubmit()" class="bg-gray-800 p-6 rounded">
+    <form [formGroup]="rfqForm" (ngSubmit)="onSubmit()" class="space-y-8 p-8 rounded-2xl shadow-2xl backdrop-blur-lg bg-gray-800/40 border border-gray-600/40">
       <!-- Category Selection -->
-      <div class="mb-6">
-        <h2 class="text-white text-lg mb-4">Catégorie de produit</h2>
-        <div class="grid grid-cols-2 gap-4">
+      <div class="space-y-4">
+        <h2 class="text-xl font-semibold text-white flex items-center">
+          <svg class="w-6 h-6 mr-2 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+          </svg>
+          Catégorie de produit *
+        </h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div 
             *ngFor="let category of categories; trackBy: trackByCategory"
             (click)="selectCategory(category)"
-            class="p-4 border rounded cursor-pointer"
-            [class.border-blue-500]="selectedCategory?.id === category.id">
-            <h3 class="text-white">{{ category.name }}</h3>
-            <p class="text-gray-400 text-sm">{{ category.description }}</p>
-            <span class="text-blue-300">{{ formatPrice(category.basePrice) }}</span>
+            class="p-4 border border-gray-600/50 rounded-xl cursor-pointer transition-all duration-200 hover:border-indigo-500/50 hover:bg-gray-700/30"
+            [class.border-indigo-500]="selectedCategory?.id === category.id"
+            [class.bg-indigo-900]="selectedCategory?.id === category.id"
+            [class.border-red-500]="rfqForm.get('categoryId')?.invalid && rfqForm.get('categoryId')?.touched">
+            <h3 class="text-white font-medium mb-1">{{ category.name }}</h3>
+            <p class="text-gray-400 text-sm mb-2">{{ category.description }}</p>
+            <span class="text-indigo-300 font-semibold">{{ formatPrice(category.basePrice) }}</span>
           </div>
+        </div>
+        <div *ngIf="rfqForm.get('categoryId')?.invalid && rfqForm.get('categoryId')?.touched" class="mt-2 text-sm text-red-400">
+          <span *ngIf="rfqForm.get('categoryId')?.errors?.['required']">Veuillez sélectionner une catégorie</span>
         </div>
       </div>
 
       <!-- Product Description -->
-      <div class="mb-6">
-        <label class="block text-white mb-2">Description du produit *</label>
+      <div class="space-y-2">
+        <label class="block text-sm font-medium text-gray-300">Description du produit *</label>
         <textarea 
           formControlName="productDescription"
-          class="w-full p-3 bg-gray-700 text-white rounded"
+          placeholder="Décrivez en détail le produit que vous recherchez..."
+          class="w-full px-4 py-3 border border-gray-600/50 rounded-xl bg-gray-800/50 backdrop-blur-sm text-white placeholder-gray-400 focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500/50 transition-colors duration-200 resize-none"
+          [class.border-red-500]="rfqForm.get('productDescription')?.invalid && rfqForm.get('productDescription')?.touched"
           rows="4">
         </textarea>
+        <div *ngIf="rfqForm.get('productDescription')?.invalid && rfqForm.get('productDescription')?.touched" class="mt-1 text-sm text-red-400">
+          <span *ngIf="rfqForm.get('productDescription')?.errors?.['required']">La description du produit est requise</span>
+        </div>
       </div>
 
-      <!-- Quantity -->
-      <div class="mb-6">
-        <label class="block text-white mb-2">Quantité *</label>
-        <input 
-          type="number" 
-          formControlName="quantity"
-          class="w-full p-3 bg-gray-700 text-white rounded">
-      </div>
+      <!-- Quantity and Budget Row -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- Quantity -->
+        <div class="space-y-2">
+          <label class="block text-sm font-medium text-gray-300">Quantité *</label>
+          <input 
+            type="number" 
+            formControlName="quantity"
+            placeholder="Ex: 100"
+            min="1"
+            class="w-full px-4 py-3 border border-gray-600/50 rounded-xl bg-gray-800/50 backdrop-blur-sm text-white placeholder-gray-400 focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500/50 transition-colors duration-200"
+            [class.border-red-500]="rfqForm.get('quantity')?.invalid && rfqForm.get('quantity')?.touched">
+          <div *ngIf="rfqForm.get('quantity')?.invalid && rfqForm.get('quantity')?.touched" class="mt-1 text-sm text-red-400">
+            <span *ngIf="rfqForm.get('quantity')?.errors?.['required']">La quantité est requise</span>
+            <span *ngIf="rfqForm.get('quantity')?.errors?.['min']">La quantité doit être supérieure à 0</span>
+          </div>
+        </div>
 
-      <!-- Budget -->
-      <div class="mb-6">
-        <label class="block text-white mb-2">Budget</label>
-        <input 
-          type="number" 
-          formControlName="budget"
-          placeholder="Budget en FCFA (optionnel)"
-          class="w-full p-3 bg-gray-700 text-white rounded">
+        <!-- Budget -->
+        <div class="space-y-2">
+          <label class="block text-sm font-medium text-gray-300">Budget estimé</label>
+          <input 
+            type="number" 
+            formControlName="budget"
+            placeholder="Budget en FCFA (optionnel)"
+            class="w-full px-4 py-3 border border-gray-600/50 rounded-xl bg-gray-800/50 backdrop-blur-sm text-white placeholder-gray-400 focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500/50 transition-colors duration-200">
+        </div>
       </div>
 
       <!-- Product Image Upload -->
-      <div class="mb-6">
-        <label class="block text-white mb-2">Image du produit (recommandée)</label>
-        <div class="border-2 border-dashed border-gray-600 rounded p-6 text-center">
+      <div class="space-y-2">
+        <label class="block text-sm font-medium text-gray-300">Image du produit (recommandée)</label>
+        <div class="border-2 border-dashed border-gray-600/50 rounded-xl p-8 text-center transition-colors duration-200 hover:border-indigo-500/50">
           <input 
             type="file" 
             accept="image/*"
@@ -60,44 +100,73 @@
             #imageInput>
           
           <div *ngIf="!productImagePreview" class="text-gray-400">
-            <i class="fas fa-image text-3xl mb-3 text-blue-300"></i>
-            <p class="mb-2">Ajoutez une image de votre produit</p>
+            <svg class="w-12 h-12 mx-auto mb-4 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+            </svg>
+            <p class="text-lg mb-2 text-white">Ajoutez une image de votre produit</p>
+            <p class="text-sm text-gray-400 mb-4">Une image aide nos fournisseurs à mieux comprendre votre besoin</p>
             <button 
               type="button"
               (click)="imageInput.click()"
-              class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
-              <i class="fas fa-upload mr-2"></i>
+              class="inline-flex items-center px-6 py-3 border border-transparent text-sm font-medium rounded-xl text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all duration-200 shadow-lg">
+              <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+              </svg>
               Choisir une image
             </button>
-            <p class="text-sm text-gray-500 mt-2">JPG, PNG (max 5MB)</p>
+            <p class="text-xs text-gray-500 mt-3">JPG, PNG (max 5MB)</p>
           </div>
           
           <div *ngIf="productImagePreview" class="relative">
-            <img [src]="productImagePreview" alt="Aperçu du produit" class="max-w-full max-h-48 mx-auto rounded">
+            <img [src]="productImagePreview" alt="Aperçu du produit" class="max-w-full max-h-48 mx-auto rounded-xl shadow-lg">
             <button 
               type="button"
               (click)="removeProductImage()"
-              class="absolute top-2 right-2 bg-red-600 text-white rounded-full w-8 h-8 flex items-center justify-center hover:bg-red-700">
-              <i class="fas fa-times"></i>
+              class="absolute -top-2 -right-2 bg-red-500 hover:bg-red-600 text-white rounded-full w-8 h-8 flex items-center justify-center transition-colors duration-200 shadow-lg">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+              </svg>
             </button>
             <button 
               type="button"
               (click)="imageInput.click()"
-              class="mt-3 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
-              <i class="fas fa-sync-alt mr-2"></i>
+              class="mt-4 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-xl text-white bg-indigo-600 hover:bg-indigo-700 transition-all duration-200">
+              <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+              </svg>
               Changer l'image
             </button>
           </div>
         </div>
       </div>
 
-      <!-- Submit -->
-      <button 
-        type="submit" 
-        [disabled]="rfqForm.invalid || isSubmitting"
-        class="bg-blue-600 text-white px-6 py-3 rounded">
-        {{ isSubmitting ? 'En cours...' : 'Ajouter au panier' }}
-      </button>
+      <!-- Error Message -->
+      <div *ngIf="rfqForm.invalid && rfqForm.touched" class="bg-red-900/30 border border-red-500/50 text-red-300 p-4 rounded-xl backdrop-blur-sm">
+        <div class="flex items-center">
+          <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+          </svg>
+          Veuillez corriger les erreurs ci-dessus avant de continuer
+        </div>
+      </div>
+
+      <!-- Submit Button -->
+      <div class="pt-4">
+        <button 
+          type="submit" 
+          [disabled]="rfqForm.invalid || isSubmitting"
+          class="w-full flex justify-center items-center py-4 px-6 border border-transparent text-lg font-medium rounded-xl text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 shadow-lg">
+          <span *ngIf="isSubmitting" class="mr-3">
+            <svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+          </span>
+          <svg *ngIf="!isSubmitting" class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 3H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17M17 13v4a2 2 0 01-2 2H9a2 2 0 01-2-2v-4m8 0V9a2 2 0 00-2-2H9a2 2 0 00-2 2v4.01"></path>
+          </svg>
+          {{ isSubmitting ? 'Envoi en cours...' : 'Ajouter au panier' }}
+        </button>
+      </div>
     </form>
   </div>
-</div>
