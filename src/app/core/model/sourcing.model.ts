@@ -6,6 +6,7 @@ export interface SourcingCategory {
   description: string;
   basePrice: number;
   features: string[];
+  image: string;
 }
 
 export interface RFQRequest {
@@ -111,7 +112,7 @@ export interface SourcingRequestPayload {
   shippingInfo: ShippingInfo;
   cartItems: CartItem[];
   totalAmount: number;
-  user?: UserResponse;
+  user: UserResponse;
 }
 
 export interface SourcingRequestResponse {

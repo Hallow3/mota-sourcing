@@ -40,14 +40,6 @@ export class SourcingService {
     }
   }
 
-  getCategories(): Observable<SourcingCategory[]> {
-    return this.http.get<SourcingCategory[]>(`${this.apiUrl}/categories`);
-  }
-
-  submitRFQ(rfq: RFQRequest): Observable<RFQRequest> {
-    return this.http.post<RFQRequest>(`${this.apiUrl}/rfq`, rfq);
-  }
-
   addToCart(item: CartItem): void {
     const currentCart = this.cartSubject.value;
     const newCart = [...currentCart, item];

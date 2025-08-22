@@ -13,6 +13,7 @@ export class SourcingRequestService {
   constructor(private http: HttpClient) {}
 
   submitSourcingRequest(payload: SourcingRequestPayload): Observable<SourcingRequestResponse> {
+    console.log("sourcing request payload", payload);
     return this.http.post<SourcingRequestResponse>(`${this.API_URL}/sourcing/submit`, payload)
       .pipe(
         catchError(this.handleError)

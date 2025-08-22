@@ -4,13 +4,15 @@ import { FormBuilder, FormGroup, FormArray, ReactiveFormsModule, Validators } fr
 import { Router, RouterModule, ActivatedRoute } from '@angular/router';
 import { SourcingService } from '../../../core/service/sourcing.service';
 import { CurrencyService } from '../../../core/service/currency.service';
+import { SourcingCategoryService } from '../../../core/service/sourcing-category.service';
 import { SourcingCategory, RFQRequest, SourcingOption, CartItem } from '../../../core/model/sourcing.model';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-sourcing-request-form',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, RouterModule],
-  templateUrl: './sourcing-request-form.component.html',
+  templateUrl: './sourcing-request-form-updated.component.html',
   styleUrl: './sourcing-request-form.component.css'
 })
 export class SourcingRequestFormComponent {
@@ -19,9 +21,10 @@ export class SourcingRequestFormComponent {
   private route = inject(ActivatedRoute);
   private sourcingService = inject(SourcingService);
   private currencyService = inject(CurrencyService);
+  private categoryService = inject(SourcingCategoryService);
 
   rfqForm: FormGroup;
-  categories: SourcingCategory[] = [];
+  categories$!: Observable<SourcingCategory[]>;
   selectedCategory: SourcingCategory | null = null;
   selectedFiles: File[] = [];
   availableOptions: SourcingOption[] = [];
@@ -43,14 +46,19 @@ export class SourcingRequestFormComponent {
     this.handleCategoryPreselection();
   }
 
+  loadCategories(): void {
+    this.categories$ = this.categoryService.getCategories();
+  }
+
   onCategoryChange(event: Event): void {
     const select = event.target as HTMLSelectElement;
     const categoryId = parseInt(select.value);
     if (categoryId) {
-      const category = this.categories.find(c => c.id === categoryId);
-      if (category) {
-        this.selectCategory(category);
-      }
+      this.categoryService.getCategoryById(categoryId).subscribe(category => {
+        if (category) {
+          this.selectCategory(category);
+        }
+      });
     } else {
       this.selectedCategory = null;
     }
@@ -60,66 +68,13 @@ export class SourcingRequestFormComponent {
     this.route.queryParams.subscribe(params => {
       if (params['categoryId']) {
         const categoryId = parseInt(params['categoryId']);
-        const category = this.categories.find(c => c.id === categoryId);
-        if (category) {
-          this.selectCategory(category);
-        }
+        this.categoryService.getCategoryById(categoryId).subscribe(category => {
+          if (category) {
+            this.selectCategory(category);
+          }
+        });
       }
     });
-  }
-
-  loadCategories(): void {
-    // Mock data - replace with service call
-    this.categories = [
-      {
-        id: 1,
-        name: 'Électronique',
-        description: 'Composants, gadgets, appareils électroniques',
-        basePrice: 33000,
-        features: ['Sourcing', 'Test qualité'],
-        image: ''
-      },
-      {
-        id: 2,
-        name: 'Textile & Mode',
-        description: 'Vêtements, accessoires, chaussures',
-        basePrice: 20000,
-        features: ['Sourcing', 'Échantillons'],
-        image: ''
-      },
-      {
-        id: 3,
-        name: 'Maison & Décoration',
-        description: 'Mobilier, décoration, électroménager',
-        basePrice: 26000,
-        features: ['Sourcing', 'Photos HD'],
-        image: ''
-      },
-      {
-        id: 4,
-        name: 'Jouets & Enfants',
-        description: 'Jouets, puériculture, articles enfants',
-        basePrice: 23000,
-        features: ['Sourcing', 'Test sécurité'],
-        image: ''
-      },
-      {
-        id: 5,
-        name: 'Sport & Loisirs',
-        description: 'Équipements sportifs, loisirs créatifs',
-        basePrice: 30000,
-        features: ['Sourcing', 'Test résistance'],
-        image: ''
-      },
-      {
-        id: 6,
-        name: 'Automobile',
-        description: 'Pièces auto, accessoires, outils',
-        basePrice: 39000,
-        features: ['Sourcing', 'Certification'],
-        image: ''
-      }
-    ];
   }
 
   loadMockOptions(): void {
@@ -191,7 +146,6 @@ export class SourcingRequestFormComponent {
     if (input.files && input.files[0]) {
       const file = input.files[0];
       
-      // Vérifier que c'est une image
       if (file.type.startsWith('image/')) {
         const reader = new FileReader();
         reader.onload = (e) => {
@@ -244,7 +198,6 @@ export class SourcingRequestFormComponent {
     if (this.rfqForm.valid && this.selectedCategory) {
       this.isSubmitting = true;
 
-      // Create RFQ request
       const rfqRequest: RFQRequest = {
         categoryId: this.rfqForm.value.categoryId,
         productDescription: this.rfqForm.value.productDescription,
@@ -255,7 +208,6 @@ export class SourcingRequestFormComponent {
         productImage: this.productImagePreview || undefined
       };
 
-      // Create cart item
       const cartItem: CartItem = {
         id: Date.now().toString(),
         rfqRequest,
@@ -264,16 +216,12 @@ export class SourcingRequestFormComponent {
         totalPrice: this.getTotalPrice()
       };
 
-      // Add to cart
       setTimeout(() => {
         this.sourcingService.addToCart(cartItem);
         this.isSubmitting = false;
-        
-        // Navigate to cart
         this.router.navigate(['/mota/cart']);
       }, 1500);
     } else {
-      // Mark all fields as touched to show validation errors
       Object.keys(this.rfqForm.controls).forEach(key => {
         this.rfqForm.get(key)?.markAsTouched();
       });

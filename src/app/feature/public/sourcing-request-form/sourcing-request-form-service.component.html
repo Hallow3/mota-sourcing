@@ -1,5 +1,5 @@
 <div class="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-indigo-900 py-12 px-4 sm:px-6 lg:px-8">
-    <!-- Back to home button -->
+  <!-- Back to home button -->
   <a routerLink="/" class="absolute top-4 left-4 flex items-center text-gray-400 hover:text-gray-300 transition-colors duration-200">
     <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l-7 7m0 0l7 7m-7-7h18" />
@@ -27,17 +27,29 @@
           Catégorie de produit *
         </h2>
         
-        <!-- Dropdown -->
-        <select 
-          formControlName="categoryId"
-          (change)="onCategoryChange($event)"
-          class="w-full px-4 py-3 border border-gray-600/50 rounded-xl bg-gray-800/50 backdrop-blur-sm text-white focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500/50 transition-colors duration-200"
-          [class.border-red-500]="rfqForm.get('categoryId')?.invalid && rfqForm.get('categoryId')?.touched">
-          <option value="">Sélectionnez une catégorie</option>
-          <option *ngFor="let category of categories; trackBy: trackByCategory" [value]="category.id">
-            {{ category.name }} - {{ formatPrice(category.basePrice) }}
-          </option>
-        </select>
+        @defer (on immediate) {
+          <!-- Dropdown -->
+          <select 
+            formControlName="categoryId"
+            (change)="onCategoryChange($event)"
+            class="w-full px-4 py-3 border border-gray-600/50 rounded-xl bg-gray-800/50 backdrop-blur-sm text-white focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500/50 transition-colors duration-200"
+            [class.border-red-500]="rfqForm.get('categoryId')?.invalid && rfqForm.get('categoryId')?.touched">
+            <option value="">Sélectionnez une catégorie</option>
+            @for (category of categories$ | async; track category.id) {
+              <option [value]="category.id">
+                {{ category.name }} - {{ formatPrice(category.basePrice) }}
+              </option>
+            }
+          </select>
+        } @loading {
+          <div class="w-full px-4 py-3 border border-gray-600/50 rounded-xl bg-gray-700/50 animate-pulse">
+            <div class="h-5 bg-gray-600 rounded"></div>
+          </div>
+        } @error {
+          <div class="w-full px-4 py-3 border border-red-500/50 rounded-xl bg-red-900/20 text-red-300">
+            Erreur lors du chargement des catégories
+          </div>
+        }
         
         <!-- Selected Category Card -->
         <div *ngIf="selectedCategory" class="p-4 sm:p-6 border border-indigo-500/50 rounded-xl bg-indigo-900/20 backdrop-blur-sm">
@@ -197,3 +209,4 @@
       </div>
     </form>
   </div>
+</div>

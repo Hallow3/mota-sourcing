@@ -29,7 +29,7 @@ export class CheckoutComponent implements OnInit {
   cartItems: CartItem[] = [];
   isSubmitting = false;
   isAuthenticated = false;
-  currentUser: UserResponse | null = null;
+  currentUser: UserResponse = {} as UserResponse;
 
   constructor() {
     this.checkoutForm = this.fb.group({
@@ -57,7 +57,7 @@ export class CheckoutComponent implements OnInit {
     });
     
     this.authService.currentUser$.subscribe(user => {
-      this.currentUser = user;
+      this.currentUser = user!;
       if (user) {
         this.prefillUserData(user);
       }
@@ -141,14 +141,27 @@ export class CheckoutComponent implements OnInit {
         address: this.checkoutForm.value.address,
         city: this.checkoutForm.value.city,
         zipCode: this.checkoutForm.value.zipCode,
-        logisticsPreferences: this.checkoutForm.value.logisticsPreferences || undefined
+        logisticsPreferences: this.checkoutForm.value.logisticsPreferences 
+      };
+
+      const userResponse: Partial<UserResponse> = {
+        firstName: this.checkoutForm.value.firstName,
+        lastName: this.checkoutForm.value.lastName,
+        email: this.checkoutForm.value.email,
+        phone: this.checkoutForm.value.phone,
+        company: this.checkoutForm.value.company || '',
+        userType: 'CLIENT',
+        isActive: true,
+        isEmailVerified: true,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
       };
 
       const payload: SourcingRequestPayload = {
         shippingInfo,
         cartItems: this.cartItems,
         totalAmount: this.getTotalPrice(),
-        user: this.currentUser || undefined
+        user: this.isAuthenticated ? this.currentUser : userResponse as UserResponse
       };
 
       this.sourcingRequestService.submitSourcingRequest(payload).subscribe({
