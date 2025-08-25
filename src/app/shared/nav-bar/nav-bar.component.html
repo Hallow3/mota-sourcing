@@ -10,7 +10,12 @@
       <div class="hidden md:flex space-x-3">
         <!-- Authenticated user menu -->
         <ng-container *ngIf="isAuthenticated">
-          <a routerLink="/mota/dashboard"
+          <a *ngIf="isAdmin" (click)="goToAdminDashboard()"
+            class="text-purple-300 hover:text-white px-4 py-2 rounded-lg backdrop-blur-sm bg-purple-500/10 border border-purple-500/30 hover:bg-purple-500/20 transition duration-300">
+            <i class="fas fa-cog mr-2"></i>
+            Admin
+          </a>
+          <a *ngIf="!isAdmin" (click)="goToClientDashboard()"
             class="text-cyan-300 hover:text-white px-4 py-2 rounded-lg backdrop-blur-sm bg-cyan-500/10 border border-cyan-500/30 hover:bg-cyan-500/20 transition duration-300">
             <i class="fas fa-chart-line mr-2"></i>
             Dashboard
@@ -60,7 +65,12 @@
       <div class="flex flex-col space-y-4 w-64">
         <!-- Authenticated user menu -->
         <ng-container *ngIf="isAuthenticated">
-          <a routerLink="/mota/dashboard" (click)="toggleMenu()"
+          <a *ngIf="isAdmin" (click)="goToAdminDashboard()" (click)="toggleMenu()"
+            class="text-center text-purple-300 hover:text-white px-6 py-3 rounded-lg backdrop-blur-sm bg-purple-500/10 border border-purple-500/30 hover:bg-purple-500/20 transition duration-300">
+            <i class="fas fa-cog mr-2"></i>
+            Admin Dashboard
+          </a>
+          <a *ngIf="!isAdmin" (click)="goToClientDashboard()" (click)="toggleMenu()"
             class="text-center text-cyan-300 hover:text-white px-6 py-3 rounded-lg backdrop-blur-sm bg-cyan-500/10 border border-cyan-500/30 hover:bg-cyan-500/20 transition duration-300">
             <i class="fas fa-chart-line mr-2"></i>
             Dashboard

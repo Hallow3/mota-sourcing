@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
-import { catchError, delay } from 'rxjs/operators';
+import { catchError, delay, tap } from 'rxjs/operators';
 import { SourcingCategory } from '../model/sourcing.model';
 
 @Injectable({
@@ -15,6 +15,7 @@ export class SourcingCategoryService {
   getCategories(): Observable<SourcingCategory[]> {
     return this.http.get<SourcingCategory[]>(`${this.API_URL}/sourcing-categories`)
       .pipe(
+        tap(categories => console.log('Fetched categories:', categories)),
         catchError(() => this.getMockCategories())
       );
   }

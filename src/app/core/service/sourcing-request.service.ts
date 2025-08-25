@@ -33,6 +33,20 @@ export class SourcingRequestService {
       );
   }
 
+  getAllRequests(): Observable<SourcingRequestFullDTO[]> {
+    return this.http.get<SourcingRequestFullDTO[]>(`${this.API_URL}/admin/sourcing/requests`)
+      .pipe(
+        catchError(this.handleError)
+      );
+  }
+
+  updateRequestStatus(id: number, status: RequestStatus): Observable<SourcingRequestFullDTO> {
+    return this.http.put<SourcingRequestFullDTO>(`${this.API_URL}/admin/sourcing/requests/${id}/status`, { status })
+      .pipe(
+        catchError(this.handleError)
+      );
+  }
+
   getRequestsSummary(): Observable<SourcingRequestSummaryDTO> {
     return this.getMyRequests().pipe(
       map(requests => ({

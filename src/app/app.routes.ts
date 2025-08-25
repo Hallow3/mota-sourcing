@@ -48,11 +48,6 @@ export const routes: Routes = [
                 path: 'activate',
                 loadComponent: () => import('./feature/public/activate-account/activate-account.component').then(c => c.ActivateAccountComponent),
             },
-            {
-                path: 'dashboard',
-                canActivate: [ClientGuard],
-                loadComponent: () => import('./feature/public/dashboard/dashboard.component').then(c => c.DashboardComponent),
-            },
             { path: '**', component: HomeComponent }
         ]
     },
@@ -61,9 +56,28 @@ export const routes: Routes = [
         canActivate: [AdminGuard],
         children: [
             { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+            { 
+                path: 'dashboard', 
+                loadComponent: () => import('./feature/admin/dashboard/admin-dashboard.component').then(c => c.AdminDashboardComponent) 
+            },
+            { 
+                path: 'pipeline', 
+                loadComponent: () => import('./feature/admin/pipeline/pipeline.component').then(c => c.PipelineComponent) 
+            },
+            { 
+                path: 'users', 
+                loadComponent: () => import('./feature/admin/users/users.component').then(c => c.UsersComponent) 
+            }
+        ]
+    },
+    {
+        path: 'client',
+        canActivate: [ClientGuard],
+        children: [
+            { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
             {
                 path: 'dashboard',
-                loadComponent: () => import('./feature/admin/dashboard/admin-dashboard.component').then(c => c.AdminDashboardComponent),
+                loadComponent: () => import('./feature/client/dashboard/dashboard.component').then(c => c.DashboardComponent)
             }
         ]
     },

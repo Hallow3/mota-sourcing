@@ -38,7 +38,7 @@ export interface UserResponse {
   email: string;
   phone?: string;
   userType: 'ADMIN' | 'CLIENT' | 'OTHER';
-  isActive: boolean;
+  active: boolean;
   isEmailVerified: boolean;
   createdAt: string;
   updatedAt: string;

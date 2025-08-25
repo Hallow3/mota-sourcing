@@ -55,7 +55,8 @@ export class LoginComponent implements OnInit {
       this.authService.login(loginRequest).subscribe({
         next: (response) => {
           this.isLoading = false;
-          this.router.navigate(['/dashboard']);
+          const redirectUrl = this.authService.getRedirectUrl();
+          this.router.navigate([redirectUrl]);
         },
         error: (error) => {
           this.isLoading = false;

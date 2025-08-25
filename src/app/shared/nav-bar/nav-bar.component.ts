@@ -12,6 +12,8 @@ import { AuthService } from '../../core/service/auth.service';
 export class NavbarComponent implements OnInit {
   menu: boolean = false;
   isAuthenticated: boolean = false;
+  currentUser: any = null;
+  isAdmin: boolean = false;
 
   private router = inject(Router);
   private authService = inject(AuthService);
@@ -19,6 +21,11 @@ export class NavbarComponent implements OnInit {
   ngOnInit(): void {
     this.authService.isAuthenticated$.subscribe(isAuth => {
       this.isAuthenticated = isAuth;
+    });
+    
+    this.authService.currentUser$.subscribe(user => {
+      this.currentUser = user;
+      this.isAdmin = user?.userType === 'ADMIN';
     });
   }
 
@@ -40,6 +47,16 @@ export class NavbarComponent implements OnInit {
   }
 
   profileManagement(){
+    const redirectUrl = this.authService.getRedirectUrl();
+    this.router.navigate([redirectUrl]);
+  }
+
+  goToAdminDashboard(){
+    this.router.navigate(['/admin']);
+  }
+
+  goToClientDashboard(){
+    this.router.navigate(['/client']);
   }
 
 }

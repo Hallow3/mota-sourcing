@@ -181,7 +181,7 @@ export class CheckoutComponent implements OnInit {
         phone: this.checkoutForm.value.phone,
         company: this.checkoutForm.value.company,
         userType: 'CLIENT',
-        isActive: true,
+        active: true,
         isEmailVerified: false,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),

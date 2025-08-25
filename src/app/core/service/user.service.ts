@@ -50,6 +50,30 @@ export class UserService {
     );
   }
 
+  getAllUsers(): Observable<UserResponse[]> {
+    return this.http.get<UserResponse[]>(`${this.API_URL}/user/admin/users`, {
+      headers: this.getHeaders()
+    }).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  getUserById(userId: number): Observable<UserResponse> {
+    return this.http.get<UserResponse>(`${this.API_URL}/user/admin/users/${userId}`, {
+      headers: this.getHeaders()
+    }).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  toggleUserStatus(userId: number): Observable<UserResponse> {
+    return this.http.put<UserResponse>(`${this.API_URL}/user/admin/users/${userId}/toggle-status`, {}, {
+      headers: this.getHeaders()
+    }).pipe(
+      catchError(this.handleError)
+    );
+  }
+
   deactivateAccount(): Observable<ApiResponse> {
     return this.http.delete<ApiResponse>(`${this.API_URL}/user/deactivate`, {
       headers: this.getHeaders()
