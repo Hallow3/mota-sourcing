@@ -9,12 +9,12 @@
       <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1 class="text-2xl sm:text-4xl font-bold text-white mb-2">
-            Mon <span class="text-transparent bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text">Dashboard</span>
+            Mon <span
+              class="text-transparent bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text">Dashboard</span>
           </h1>
           <p class="text-lg sm:text-xl text-gray-300">Suivez vos commandes et l'avancement de vos projets</p>
         </div>
-        <button 
-          routerLink="/mota/sourcing-request"
+        <button routerLink="/mota/sourcing-request"
           class="px-4 sm:px-6 py-2 sm:py-3 bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white rounded-xl transition duration-300 shadow-lg shadow-indigo-500/25 font-semibold text-sm sm:text-base">
           <i class="fas fa-plus mr-2"></i>
           <span class="hidden sm:inline">Nouvelle </span>Commande
@@ -23,15 +23,15 @@
     </div>
 
     <!-- Summary Cards -->
-    <div *ngIf="orderSummary" class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 mb-6 sm:mb-8">
+    <div *ngIf="requestSummary" class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 mb-6 sm:mb-8">
       <div class="p-3 sm:p-6 border shadow-xl backdrop-blur-md bg-gray-800/40 border-gray-600/40 rounded-2xl">
         <div class="flex items-center">
           <div class="p-2 sm:p-3 rounded-full bg-indigo-500/20 border border-indigo-400/30">
             <i class="fas fa-shopping-bag text-indigo-300 text-sm sm:text-xl"></i>
           </div>
           <div class="ml-2 sm:ml-4">
-            <p class="text-xs sm:text-sm text-gray-400">Total commandes</p>
-            <p class="text-lg sm:text-2xl font-bold text-white">{{ orderSummary.totalOrders }}</p>
+            <p class="text-xs sm:text-sm text-gray-400">Total demandes</p>
+            <p class="text-lg sm:text-2xl font-bold text-white">{{ requestSummary.totalRequests }}</p>
           </div>
         </div>
       </div>
@@ -43,7 +43,7 @@
           </div>
           <div class="ml-2 sm:ml-4">
             <p class="text-xs sm:text-sm text-gray-400">En cours</p>
-            <p class="text-lg sm:text-2xl font-bold text-white">{{ orderSummary.pendingOrders }}</p>
+            <p class="text-lg sm:text-2xl font-bold text-white">{{ requestSummary.pendingRequests }}</p>
           </div>
         </div>
       </div>
@@ -55,19 +55,20 @@
           </div>
           <div class="ml-2 sm:ml-4">
             <p class="text-xs sm:text-sm text-gray-400">Terminées</p>
-            <p class="text-lg sm:text-2xl font-bold text-white">{{ orderSummary.completedOrders }}</p>
+            <p class="text-lg sm:text-2xl font-bold text-white">{{ requestSummary.completedRequests }}</p>
           </div>
         </div>
       </div>
 
-      <div class="p-3 sm:p-6 border shadow-xl backdrop-blur-md bg-gray-800/40 border-gray-600/40 rounded-2xl col-span-2 lg:col-span-1">
+      <div
+        class="p-3 sm:p-6 border shadow-xl backdrop-blur-md bg-gray-800/40 border-gray-600/40 rounded-2xl col-span-2 lg:col-span-1">
         <div class="flex items-center">
           <div class="p-2 sm:p-3 rounded-full bg-emerald-500/20 border border-emerald-400/30">
             <i class="fas fa-chart-line text-emerald-300 text-sm sm:text-xl"></i>
           </div>
           <div class="ml-2 sm:ml-4">
             <p class="text-xs sm:text-sm text-gray-400">Total dépensé</p>
-            <p class="text-lg sm:text-2xl font-bold text-white">{{ formatPrice(orderSummary.totalSpent) }}</p>
+            <p class="text-lg sm:text-2xl font-bold text-white">{{ formatPrice(requestSummary.totalSpent) }}</p>
           </div>
         </div>
       </div>
@@ -78,47 +79,44 @@
       <div class="p-4 sm:p-6 border shadow-xl backdrop-blur-md bg-gray-800/40 border-gray-600/40 rounded-2xl">
         <h2 class="text-xl sm:text-2xl font-bold text-white mb-4 sm:mb-6 flex items-center">
           <i class="fas fa-list-ul mr-2 sm:mr-3 text-indigo-400"></i>
-          Mes Commandes
+          Mes Demandes
         </h2>
 
-        <div *ngIf="orders.length === 0" class="text-center py-12">
+        <div *ngIf="requests.length === 0" class="text-center py-12">
           <div class="w-24 h-24 mx-auto mb-6 rounded-full bg-gray-700/50 flex items-center justify-center">
             <i class="fas fa-inbox text-gray-400 text-3xl"></i>
           </div>
-          <h3 class="text-xl font-semibold text-white mb-4">Aucune commande</h3>
-          <p class="text-gray-400 mb-6">Vous n'avez pas encore passé de commande</p>
-          <button 
-            routerLink="/mota/sourcing-request"
+          <h3 class="text-xl font-semibold text-white mb-4">Aucune demande</h3>
+          <p class="text-gray-400 mb-6">Vous n'avez pas encore fait de demande de sourcing</p>
+          <button routerLink="/mota/sourcing-request"
             class="px-6 py-3 bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white rounded-xl transition duration-300 shadow-lg shadow-indigo-500/25 font-semibold">
-            Passer ma première commande
+            Faire ma première demande
           </button>
         </div>
 
-        <div *ngIf="orders.length > 0" class="space-y-4">
-          <div 
-            *ngFor="let order of orders; trackBy: trackByOrderId" 
+        <div *ngIf="requests.length > 0" class="space-y-4">
+          <div *ngFor="let request of requests; trackBy: trackByRequestId"
             class="order-card p-6 border border-gray-600/30 rounded-xl bg-gray-700/20 hover:bg-gray-700/30 cursor-pointer transition-all duration-300"
-            (click)="showDetails(order)">
+            (click)="showDetails(request)">
             <div class="flex items-start justify-between mb-4">
               <div class="flex-1">
                 <div class="flex items-center gap-3 mb-2">
-                  <h3 class="text-lg font-semibold text-white">{{ order.orderNumber }}</h3>
-                  <span 
-                    class="px-3 py-1 rounded-full text-xs font-medium border status-badge"
-                    [class]="getStatusColor(order.status) + ' border-current bg-current/10'">
-                    {{ getStatusLabel(order.status) }}
+                  <h3 class="text-lg font-semibold text-white">Demande #{{ request.id }}</h3>
+                  <span class="px-3 py-1 rounded-full text-xs font-medium border status-badge"
+                    [class]="getStatusColor(request.requestStatus) + ' border-current bg-current/10'">
+                    {{ getStatusLabel(request.requestStatus) }}
                   </span>
                 </div>
                 <p class="text-gray-400 text-sm mb-2">
-                  Commandé le {{ order.createdAt | date:'dd/MM/yyyy à HH:mm' }}
+                  Créée le {{ request.createdAt | date:'dd/MM/yyyy à HH:mm' }}
                 </p>
                 <p class="text-gray-400 text-sm">
-                  <span class="font-medium">Livraison estimée:</span> {{ getEstimatedDeliveryText(order) }}
+                  <span class="font-medium">Livraison estimée:</span> {{ getEstimatedDeliveryText(request) }}
                 </p>
               </div>
               <div class="text-right">
-                <p class="text-2xl font-bold text-indigo-300 mb-2">{{ formatPrice(order.totalAmount) }}</p>
-                <p class="text-sm text-gray-400">{{ order.cartItems.length || 0 }} article(s)</p>
+                <p class="text-2xl font-bold text-indigo-300 mb-2">{{ formatPrice(request!.totalAmount!) }}</p>
+                <p class="text-sm text-gray-400">{{ 'Non spécifié' }}</p>
               </div>
             </div>
 
@@ -126,26 +124,24 @@
             <div class="mb-4">
               <div class="flex justify-between text-sm text-gray-400 mb-2">
                 <span>Progression</span>
-                <span>{{ getStatusProgress(order.status) }}%</span>
+                <span>{{ getStatusProgress(request.requestStatus) }}%</span>
               </div>
               <div class="w-full bg-gray-700 rounded-full h-2">
-                <div 
-                  class="progress-bar h-2 rounded-full bg-gradient-to-r from-indigo-500 to-purple-600"
-                  [style.width.%]="getStatusProgress(order.status)">
+                <div class="progress-bar h-2 rounded-full bg-gradient-to-r from-indigo-500 to-purple-600"
+                  [style.width.%]="getStatusProgress(request.requestStatus)">
                 </div>
               </div>
             </div>
 
-            <!-- Customer Info -->
+            <!-- Request Info -->
             <div class="flex items-center justify-between text-sm">
               <div class="flex items-center text-gray-400">
-                <i class="fas fa-user mr-2"></i>
-                {{ order.customerInfo.firstName }} {{ order.customerInfo.lastName }}
-                <span *ngIf="order.customerInfo.company" class="ml-2">({{ order.customerInfo.company }})</span>
+                <i class="fas fa-tag mr-2"></i>
+                {{ 'Non spécifié' }}
               </div>
               <div class="flex items-center text-gray-400">
-                <i class="fas fa-map-marker-alt mr-2"></i>
-                {{ order.shippingInfo.city }}, {{ order.shippingInfo.country }}
+                <i class="fas fa-calendar mr-2"></i>
+                {{ request.createdAt | date:'dd/MM/yyyy' }}
               </div>
             </div>
           </div>
@@ -154,22 +150,20 @@
     </div>
   </div>
 
-  <!-- Order Details Modal -->
-  <div 
-    *ngIf="showOrderDetails && selectedOrder" 
+  <!-- Request Details Modal -->
+  <div *ngIf="showRequestDetails && selectedRequest"
     class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4"
     (click)="closeDetails()">
-    <div 
+    <div
       class="max-w-4xl w-full max-h-[90vh] overflow-y-auto bg-gray-800 rounded-2xl border border-gray-600/40 shadow-2xl"
       (click)="$event.stopPropagation()">
       <div class="p-6 border-b border-gray-600/30">
         <div class="flex items-center justify-between">
           <div>
-            <h2 class="text-2xl font-bold text-white mb-1">{{ selectedOrder.orderNumber }}</h2>
-            <p class="text-gray-400">Détails de la commande</p>
+            <h2 class="text-2xl font-bold text-white mb-1">Demande #{{ selectedRequest.id }}</h2>
+            <p class="text-gray-400">Détails de la demande de sourcing</p>
           </div>
-          <button 
-            (click)="closeDetails()"
+          <button (click)="closeDetails()"
             class="p-2 text-gray-400 hover:text-white rounded-lg hover:bg-gray-700/50 transition">
             <i class="fas fa-times text-xl"></i>
           </button>
@@ -178,97 +172,80 @@
 
       <div class="p-6">
         <div class="grid lg:grid-cols-2 gap-8">
-          <!-- Order Info -->
+          <!-- Request Info -->
           <div>
             <h3 class="text-lg font-semibold text-white mb-4">Informations générales</h3>
             <div class="space-y-3 text-sm">
               <div class="flex justify-between">
                 <span class="text-gray-400">Statut:</span>
-                <span [class]="getStatusColor(selectedOrder.status) + ' font-medium'">
-                  {{ getStatusLabel(selectedOrder.status) }}
+                <span [class]="getStatusColor(selectedRequest.requestStatus) + ' font-medium'">
+                  {{ getStatusLabel(selectedRequest.requestStatus) }}
                 </span>
               </div>
               <div class="flex justify-between">
-                <span class="text-gray-400">Date de commande:</span>
-                <span class="text-white">{{ selectedOrder.createdAt | date:'dd/MM/yyyy à HH:mm' }}</span>
+                <span class="text-gray-400">Date de création:</span>
+                <span class="text-white">{{ selectedRequest.createdAt | date:'dd/MM/yyyy à HH:mm' }}</span>
               </div>
               <div class="flex justify-between">
                 <span class="text-gray-400">Dernière mise à jour:</span>
-                <span class="text-white">{{ selectedOrder.updatedAt | date:'dd/MM/yyyy à HH:mm' }}</span>
+                <span class="text-white">{{ selectedRequest.updatedAt | date:'dd/MM/yyyy à HH:mm' }}</span>
               </div>
               <div class="flex justify-between">
                 <span class="text-gray-400">Livraison estimée:</span>
-                <span class="text-white">{{ getEstimatedDeliveryText(selectedOrder) }}</span>
+                <span class="text-white">{{ getEstimatedDeliveryText(selectedRequest) }}</span>
               </div>
               <div class="flex justify-between">
-                <span class="text-gray-400">Montant total:</span>
-                <span class="text-indigo-300 font-bold text-lg">{{ formatPrice(selectedOrder.totalAmount) }}</span>
+                <span class="text-gray-400">Budget estimé:</span>
+                <span class="text-indigo-300 font-bold text-lg">{{ formatPrice(selectedRequest.totalAmount!) }}</span>
               </div>
             </div>
 
-            <!-- Customer Info -->
-            <h3 class="text-lg font-semibold text-white mb-4 mt-8">Informations client</h3>
+            <!-- Product Info -->
+            @for (rfq of selectedRequest.cartItems; track $index) {
+            <h3 class="text-lg font-semibold text-white mb-4 mt-8">Informations produit</h3>
             <div class="space-y-2 text-sm">
-              <p class="text-white">
-                {{ selectedOrder.customerInfo.firstName }} {{ selectedOrder.customerInfo.lastName }}
-              </p>
-              <p class="text-gray-400" *ngIf="selectedOrder.customerInfo.company">
-                {{ selectedOrder.customerInfo.company }}
-              </p>
-              <p class="text-gray-400">{{ selectedOrder.customerInfo.email }}</p>
-              <p class="text-gray-400">{{ selectedOrder.customerInfo.phone }}</p>
+              <p class="text-white font-medium">--</p>
+              <p class="text-gray-400">Catégorie: {{ 'Non spécifié' }}</p>
+              <p class="text-gray-400">Quantité: {{ rfq.rfqRequest.quantity }}</p>
             </div>
+            }
 
-            <!-- Shipping Info -->
-            <h3 class="text-lg font-semibold text-white mb-4 mt-8">Adresse de livraison</h3>
+            <!-- Contact Info -->
+            <h3 class="text-lg font-semibold text-white mb-4 mt-8">Informations de contact</h3>
             <div class="text-sm text-gray-400">
-              <p class="text-white">{{ selectedOrder.shippingInfo.address }}</p>
-              <p>{{ selectedOrder.shippingInfo.zipCode }} {{ selectedOrder.shippingInfo.city }}</p>
-              <p>{{ selectedOrder.shippingInfo.country }}</p>
+              <p class="text-white">{{ selectedRequest.user.firstName }} {{ selectedRequest.user.lastName }}</p>
+              <p>{{ selectedRequest.user.email }}</p>
+              <p>{{ selectedRequest.user.phone }}</p>
             </div>
           </div>
 
-          <!-- Tracking Timeline -->
+          <!-- Status Timeline -->
           <div>
-            <h3 class="text-lg font-semibold text-white mb-4">Suivi de commande</h3>
-            <div class="timeline-line">
-              <div 
-                *ngFor="let track of selectedOrder.tracking; trackBy: trackByTrackingId; let isLast = last" 
-                class="timeline-item mb-6"
-                [class.mb-0]="isLast">
-                <div 
-                  class="timeline-dot"
-                  [class]="getStatusColor(track.status).replace('text-', 'bg-')">
+            <h3 class="text-lg font-semibold text-white mb-4">Suivi de la demande</h3>
+            <div class="space-y-4">
+              <div class="bg-gray-700/30 p-4 rounded-lg">
+                <div class="flex items-start justify-between mb-2">
+                  <h4 class="font-semibold text-indigo-300">Demande créée</h4>
+                  <span class="text-xs text-gray-400">
+                    {{ selectedRequest.createdAt | date:'dd/MM/yyyy HH:mm' }}
+                  </span>
                 </div>
-                <div class="bg-gray-700/30 p-4 rounded-lg">
-                  <div class="flex items-start justify-between mb-2">
-                    <h4 
-                      class="font-semibold"
-                      [class]="getStatusColor(track.status)">
-                      {{ getStatusLabel(track.status) }}
-                    </h4>
-                    <span class="text-xs text-gray-400">
-                      {{ track.timestamp | date:'dd/MM/yyyy HH:mm' }}
-                    </span>
-                  </div>
-                  <p class="text-white text-sm mb-2">{{ track.message }}</p>
-                  <p *ngIf="track.location" class="text-gray-400 text-xs flex items-center">
-                    <i class="fas fa-map-marker-alt mr-1"></i>
-                    {{ track.location }}
-                  </p>
+                <p class="text-white text-sm">Votre demande de sourcing a été créée avec succès</p>
+              </div>
+
+              <div *ngIf="selectedRequest.requestStatus !== 'PENDING'" class="bg-gray-700/30 p-4 rounded-lg">
+                <div class="flex items-start justify-between mb-2">
+                  <h4 class="font-semibold" [class]="getStatusColor(selectedRequest.requestStatus)">
+                    {{ getStatusLabel(selectedRequest.requestStatus) }}
+                  </h4>
+                  <span class="text-xs text-gray-400">
+                    {{ selectedRequest.updatedAt | date:'dd/MM/yyyy HH:mm' }}
+                  </span>
                 </div>
+                <p class="text-white text-sm">Statut mis à jour</p>
               </div>
             </div>
           </div>
-        </div>
-
-        <!-- Notes -->
-        <div *ngIf="selectedOrder.notes" class="mt-8 p-4 bg-indigo-500/10 border border-indigo-400/30 rounded-lg">
-          <h4 class="text-indigo-300 font-semibold mb-2">
-            <i class="fas fa-sticky-note mr-2"></i>
-            Notes
-          </h4>
-          <p class="text-gray-300">{{ selectedOrder.notes }}</p>
         </div>
       </div>
     </div>

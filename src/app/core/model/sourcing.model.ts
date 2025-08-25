@@ -38,13 +38,6 @@ export interface SourcingOption {
   selected: boolean;
 }
 
-export interface CheckoutData {
-  shippingInfo: ShippingInfo;
-  cartItems: CartItem[];
-  totalAmount: number;
-  user?: UserResponse;
-}
-
 export interface ShippingInfo {
   country: string;
   address: string;
@@ -62,7 +55,7 @@ export enum RFQStatus {
   REJECTED = 'REJECTED'
 }
 
-export enum OrderStatus {
+export enum RequestStatus {
   PENDING = 'PENDING',
   CONFIRMED = 'CONFIRMED',
   SOURCING = 'SOURCING',
@@ -76,36 +69,18 @@ export enum OrderStatus {
   CANCELLED = 'CANCELLED'
 }
 
-export interface Order {
-  id: string;
-  orderNumber: string;
-  cartItems: CartItem[];
-  user?: UserResponse;
-  shippingInfo: ShippingInfo;
+export interface SourcingRequestBasicDTO {
+  id: number;
   totalAmount: number;
-  status: OrderStatus;
+  requestStatus: RequestStatus;
   createdAt: Date;
   updatedAt: Date;
-  estimatedDelivery?: Date;
-  tracking?: OrderTracking[];
-  notes?: string;
 }
 
-export interface OrderTracking {
-  id: string;
-  orderId: string;
-  status: OrderStatus;
-  message: string;
-  timestamp: Date;
-  location?: string;
-  documents?: string[];
-}
-
-export interface OrderSummary {
-  totalOrders: number;
-  pendingOrders: number;
-  completedOrders: number;
-  totalSpent: number;
+export interface SourcingRequestFullDTO extends SourcingRequestBasicDTO {
+  shippingInfo: ShippingInfo;
+  user: UserResponse;
+  cartItems: CartItem[];
 }
 
 export interface SourcingRequestPayload {
@@ -120,4 +95,24 @@ export interface SourcingRequestResponse {
   message: string;
   orderId?: string;
   orderNumber?: string;
+}
+export enum SourcingRequestStatus {
+  PENDING = 'PENDING',
+  CONFIRMED = 'CONFIRMED',
+  SOURCING = 'SOURCING',
+  QUOTED = 'QUOTED',
+  NEGOTIATING = 'NEGOTIATING',
+  PRODUCTION = 'PRODUCTION',
+  QUALITY_CHECK = 'QUALITY_CHECK',
+  SHIPPING = 'SHIPPING',
+  DELIVERED = 'DELIVERED',
+  COMPLETED = 'COMPLETED',
+  CANCELLED = 'CANCELLED'
+}
+
+export interface SourcingRequestSummaryDTO {
+  totalRequests: number;
+  pendingRequests: number;
+  completedRequests: number;
+  totalSpent: number;
 }

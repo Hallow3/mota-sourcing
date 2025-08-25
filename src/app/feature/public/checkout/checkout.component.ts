@@ -4,16 +4,17 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { Router, RouterModule } from '@angular/router';
 import { SourcingService } from '../../../core/service/sourcing.service';
 import { CurrencyService } from '../../../core/service/currency.service';
-import { OrderService } from '../../../core/service/order.service';
 import { AuthService } from '../../../core/service/auth.service';
 import { SourcingRequestService } from '../../../core/service/sourcing-request.service';
+import { PopupService } from '../../../shared/popup/popup.service';
+import { PopupComponent } from '../../../shared/popup/popup.component';
 import { CartItem, ShippingInfo, SourcingRequestPayload } from '../../../core/model/sourcing.model';
 import { UserResponse } from '../../../core/model/auth.models';
 
 @Component({
   selector: 'app-checkout',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterModule],
+  imports: [CommonModule, ReactiveFormsModule, RouterModule, PopupComponent],
   templateUrl: './checkout.component.html'
 })
 export class CheckoutComponent implements OnInit {
@@ -21,15 +22,15 @@ export class CheckoutComponent implements OnInit {
   private router = inject(Router);
   public sourcingService = inject(SourcingService);
   private currencyService = inject(CurrencyService);
-  private orderService = inject(OrderService);
   private authService = inject(AuthService);
   private sourcingRequestService = inject(SourcingRequestService);
+  private popupService = inject(PopupService);
 
   checkoutForm: FormGroup;
   cartItems: CartItem[] = [];
   isSubmitting = false;
   isAuthenticated = false;
-  currentUser: UserResponse = {} as UserResponse;
+  currentUser: UserResponse | null = null;
 
   constructor() {
     this.checkoutForm = this.fb.group({
@@ -57,7 +58,7 @@ export class CheckoutComponent implements OnInit {
     });
     
     this.authService.currentUser$.subscribe(user => {
-      this.currentUser = user!;
+      this.currentUser = user;
       if (user) {
         this.prefillUserData(user);
       }
@@ -73,7 +74,6 @@ export class CheckoutComponent implements OnInit {
       company: user.company || ''
     });
     
-    // Disable user info fields for authenticated users
     if (this.isAuthenticated) {
       this.checkoutForm.get('firstName')?.disable();
       this.checkoutForm.get('lastName')?.disable();
@@ -93,7 +93,6 @@ export class CheckoutComponent implements OnInit {
 
   getTotalPrice(): number {
     const total = this.sourcingService.getCartTotal();
-    // Premier sourcing gratuit pour les utilisateurs non connectés
     if (!this.isAuthenticated && this.cartItems.length > 0) {
       const firstItemPrice = this.cartItems[0].totalPrice;
       return Math.max(0, total - firstItemPrice);
@@ -129,67 +128,94 @@ export class CheckoutComponent implements OnInit {
   }
 
   onSubmit(): void {
+    console.log('onSubmit called, isAuthenticated:', this.isAuthenticated);
+    
     const isFormValid = this.isAuthenticated ? 
       this.isShippingFormValid() : 
       this.checkoutForm.valid;
       
     if (isFormValid && this.cartItems.length > 0) {
-      this.isSubmitting = true;
-
-      const shippingInfo: ShippingInfo = {
-        country: this.checkoutForm.value.country,
-        address: this.checkoutForm.value.address,
-        city: this.checkoutForm.value.city,
-        zipCode: this.checkoutForm.value.zipCode,
-        logisticsPreferences: this.checkoutForm.value.logisticsPreferences 
-      };
-
-      const userResponse: Partial<UserResponse> = {
-        firstName: this.checkoutForm.value.firstName,
-        lastName: this.checkoutForm.value.lastName,
-        email: this.checkoutForm.value.email,
-        phone: this.checkoutForm.value.phone,
-        company: this.checkoutForm.value.company || '',
-        userType: 'CLIENT',
-        isActive: true,
-        isEmailVerified: true,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString()
-      };
-
-      const payload: SourcingRequestPayload = {
-        shippingInfo,
-        cartItems: this.cartItems,
-        totalAmount: this.getTotalPrice(),
-        user: this.isAuthenticated ? this.currentUser : userResponse as UserResponse
-      };
-
-      this.sourcingRequestService.submitSourcingRequest(payload).subscribe({
-        next: (response) => {
-          this.isSubmitting = false;
-          if (response.success) {
-            // Clear cart
-            this.sourcingService.clearCart();
-            
-            // Navigate to dashboard with success message
-            this.router.navigate(['/mota/dashboard'], { 
-              queryParams: { 
-                success: true, 
-                order: response.orderNumber 
-              } 
-            });
-          }
-        },
-        error: (error) => {
-          this.isSubmitting = false;
-          console.error('Error submitting sourcing request:', error);
-        }
-      });
+      if (!this.isAuthenticated) {
+        console.log('Showing guest confirmation');
+        this.showGuestConfirmation();
+      } else {
+        this.submitRequest();
+      }
     } else {
-      // Mark all fields as touched to show validation errors
       Object.keys(this.checkoutForm.controls).forEach(key => {
         this.checkoutForm.get(key)?.markAsTouched();
       });
     }
+  }
+
+  private showGuestConfirmation(): void {
+    console.log('showGuestConfirmation called');
+    this.popupService.confirm(
+      'Création de compte',
+      'Votre compte sera créé automatiquement après soumission. Votre premier sourcing est gratuit !',
+      () => {
+        console.log('Confirmation accepted');
+        this.submitRequest();
+      }
+    );
+  }
+
+  private submitRequest(): void {
+    this.isSubmitting = true;
+
+    const shippingInfo: ShippingInfo = {
+      country: this.checkoutForm.value.country,
+      address: this.checkoutForm.value.address,
+      city: this.checkoutForm.value.city,
+      zipCode: this.checkoutForm.value.zipCode,
+      logisticsPreferences: this.checkoutForm.value.logisticsPreferences
+    };
+
+    const user: UserResponse = this.isAuthenticated && this.currentUser ? 
+      this.currentUser : 
+      {
+        id: 0,
+        firstName: this.checkoutForm.value.firstName,
+        lastName: this.checkoutForm.value.lastName,
+        email: this.checkoutForm.value.email,
+        phone: this.checkoutForm.value.phone,
+        company: this.checkoutForm.value.company,
+        userType: 'CLIENT',
+        isActive: true,
+        isEmailVerified: false,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+        roles: ['CLIENT']
+      };
+
+    const payload: SourcingRequestPayload = {
+      shippingInfo,
+      cartItems: this.cartItems,
+      totalAmount: this.getTotalPrice(),
+      user
+    };
+
+    this.sourcingRequestService.submitSourcingRequest(payload).subscribe({
+      next: (response) => {
+        this.isSubmitting = false;
+        if (response.success) {
+          this.sourcingService.clearCart();
+          this.showSuccessPopup(response.orderNumber);
+        }
+      },
+      error: (error) => {
+        this.isSubmitting = false;
+        this.popupService.error('Erreur', 'Une erreur est survenue lors de la soumission');
+      }
+    });
+  }
+
+  private showSuccessPopup(orderNumber?: string): void {
+    this.popupService.confirm(
+      'Demande envoyée !',
+      `Votre demande de sourcing a été prise en compte${orderNumber ? ` (${orderNumber})` : ''}. Un email de confirmation vous a été envoyé.`,
+      () => this.router.navigate(['/mota/dashboard']),
+      () => this.router.navigate(['/mota/sourcing-request'])
+    );
   }
 }
